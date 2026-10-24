@@ -1,116 +1,244 @@
 /* Consent form */
-/* .consent-paper: white sheet, green top border, centered */
-/* .consent-table: striped rows, initial box on the left + statement on the right */
-/* .signature-row: printed name line, signature line, date */
+/* #consent-paper: white sheet, green top border, centered on a grey page */
+/* .consent-row: striped rows, initial box on the left + statement on the right */
+/* .signature-block: printed name line, signature line, date */
+/* .consent-actions: "Take Study" button below the paper */
+
+/* Page */
+
+.consent-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-16) var(--space-4) var(--space-18);
+  background: var(--color-bg-page);
+}
+
+/* Paper */
 
 #consent-paper {
-    display: flex;
-    flex-direction: column;
-    max-width: 80%;
-    justify-content: center;
-    width: 100%;
-    margin: var(--space-16) auto 0 auto;
-    padding: var(--space-14) var(--space-18);
-    background: var(--color-bg-white);
-    box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10);
+  width: 100%;
+  max-width: 1000px;
+  padding: var(--space-14) var(--space-18) var(--space-16);
+  background: var(--color-bg-white);
+  border: 1px solid var(--color-border);
+  border-top: 8px solid var(--color-green); /* green rule on top of the paper */
+  box-shadow: var(--shadow-card);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
 }
 
-.consent-header h1{
-    color: var(--color-green);
-    font-family: var(--font-heading);
-    font-size: 40px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: 110%;
-    letter-spacing: 0;
-    text-transform: uppercase;
-    margin: 0 0 var(--space-2) 0;
+/* spacing between elements comes from `gap` on the parents, not from margins */
+#consent-paper h1,
+#consent-paper h2,
+#consent-paper p {
+  margin: 0;
 }
 
-.consent-header p{
-    color: var(--color-text-muted);
-    font-family: var(--font-body);
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 150%; /* 142.857% */
-    margin: 0;
+/* Title block */
+
+.consent-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
 }
 
-.consent-header hr.divider{
-    width: 100%;
-    height: 2px;
-    background: var(--color-green);
-    margin: var(--space-10) 0 var(--space-3) 0;
+.consent-header h1 {
+  color: var(--color-green);
+  font-family: var(--font-heading);
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1.1;
+  text-transform: uppercase;
 }
 
-/* Consent info */
-
-section.consent-info{
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
-
+.consent-header p {
+  color: var(--color-text-muted);
 }
 
-.consent-info h2, #consent-form h2{
-    color: var(--color-green);
-    font-family: var(--font-heading);
-    font-size: 20px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: 100%;
-    letter-spacing: 0;
-    text-transform: uppercase;
-    margin: var(--space-6) 0 0 0;
+.divider {
+  width: 100%;
+  height: 2px;
+  margin: 0;
+  border: none; /* hr has a default border, only the background should show */
+  background: var(--color-text);
 }
 
-.consent-info p{
-    color: var(--color-text);
-    font-family: var(--font-body);
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 150%; /* 142.857% */
-    margin: 0;
+/* Sections 1-4 (text only) */
 
+.consent-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
 }
 
-/* Consent form */
+.consent-section h2,
+#consent-form h2 {
+  color: var(--color-green);
+  font-family: var(--font-heading);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
 
-#consent-form p {
-    margin: var(--space-3) 0;
+/* Section 5: Consent */
+
+#consent-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+#consent-form fieldset {
+  min-width: 0; /* fieldset won't shrink below its content without this */
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--color-border);
 }
 
 .consent-row {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
+  padding-left: var(--space-5);
+}
+
+.consent-row:nth-child(odd) {
+  background: var(--color-bg-page); /* striped rows: 1st, 3rd, 5th are grey */
 }
 
 .consent-row input[type="text"] {
-    width: 76px;
-    height: 44px;
-    background: var(--color-bg-white);
-    border: 1.5px solid #121212;
-    text-align: center;
+  flex: none;
+  width: 76px;
+  height: 44px;
+  background: var(--color-bg-white);
+  border: 2px solid var(--color-text);
+  border-radius: 0;
+  text-align: center;
+  text-transform: uppercase; /* initials are typed as capitals */
 }
 
-
-.consent-row label{
-    padding: var(--space-4) var(--space-6);
+.consent-row input[type="text"]::placeholder {
+  color: var(--color-text-muted);
+  font-size: 12px;
+  text-transform: none;
 }
 
-
-/* signature */
-
-#signature{
-    width: 100%;
-    margin-top: var(--space-6);
+.consent-row label {
+  flex: 1;
+  padding: var(--space-4) var(--space-6);
 }
 
+/* Signature */
 
+.signature-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  padding-top: var(--space-8);
+}
 
-#printed-name {
-    display: block;
-    width: 100%;
+.signature-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-10);
+}
+
+.signature-field {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.signature-field--date {
+  flex: none;
+  width: 224px;
+}
+
+/* the line you write on: only a bottom border */
+.signature-field input {
+  width: 100%;
+  height: 44px;
+  padding: 0 var(--space-1);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid var(--color-text);
+  border-radius: 0;
+}
+
+.signature-field input[type="date"] {
+  font-size: 24px;
+  font-weight: 700;
+  pointer-events: none; /* auto-filled and read-only: no clicking, no calendar popup */
+}
+
+.signature-field label {
+  color: var(--color-text-muted);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+/* Take Study button (below the paper) */
+
+.consent-actions {
+  padding: var(--space-5) 0;
+}
+
+.take-study-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  background: var(--color-green);
+  color: var(--color-bg-white);
+  border: none;
+  border-radius: 0; /* rectangle button in the design */
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.take-study-btn:hover {
+  background: var(--color-green-dark);
+}
+
+.take-study-btn:active {
+  background: var(--color-green-light);
+}
+
+/* Keyboard focus ring (the inputs have no visible box, so they need one) */
+
+.consent-row input:focus-visible,
+.signature-field input:focus-visible,
+.take-study-btn:focus-visible {
+  outline: 2px solid var(--color-green);
+  outline-offset: 2px;
+}
+
+/* Narrow screens */
+
+@media (max-width: 720px) {
+  #consent-paper {
+    padding: var(--space-8) var(--space-4);
+  }
+
+  .signature-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-8);
+  }
+
+  .signature-field--date {
+    width: auto;
+  }
 }

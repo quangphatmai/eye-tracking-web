@@ -17,7 +17,7 @@
         <h1>EYE TRACKING TESTS AND RESULTS</h1>
       </div>
     </header>
-    <main>
+    <main class="consent-page">
       <!-- Paper: RESEARCH STUDY CONSENT FORM
          Sections 1-4: About the Study, What to Expect, Your Data, Voluntary Participation (text only)
          Section 5: Consent, table of 6 statements, each with an initial box
@@ -28,18 +28,26 @@
         <section class="consent-header">
           <h1>RESEARCH STUDY CONSENT FORM</h1>
           <p>Utah Valley University | Participant Consent for Research</p>
-          <hr class="divider"></hr>
         </section>
 
-        <section class="consent-info">
+        <hr class="divider" />
+
+        <section class="consent-section">
           <h2>1. About the Study</h2>
           <p>
             You are invited to participate in a website usability research
             study. This research project is being conducted by Utah Valley
             University student researchers.
           </p>
-          <p>There are no costs for participating in the study. The information will help us understand how people conduct specific tasks. The data collected may not benefit you directly, but what is learned from this study should provide general benefits to UVU and researchers.</p>
+          <p>
+            There are no costs for participating in the study. The information
+            will help us understand how people conduct specific tasks. The data
+            collected may not benefit you directly, but what is learned from
+            this study should provide general benefits to UVU and researchers.
+          </p>
+        </section>
 
+        <section class="consent-section">
           <h2>2. What to Expect</h2>
           <p>
             The test will consist of participants being calibrated to an
@@ -51,7 +59,9 @@
             the interviewer has finished and has no further questions or after a
             15-25-minute window.
           </p>
+        </section>
 
+        <section class="consent-section">
           <h2>3. Your Data</h2>
           <p>
             Recordings of the eye-tracting and screencapture from the study will
@@ -61,7 +71,6 @@
             portions of the test will be used by the UVU researchers for
             analysis and presented in a summarized format to the client.
           </p>
-
           <p>
             Identifiers might be removed from the identifiable private
             information, and after such removal, the information could be used
@@ -69,7 +78,9 @@
             for future research studies without additional informed consent from
             you.
           </p>
+        </section>
 
+        <section class="consent-section">
           <h2>4. Voluntary Participation</h2>
           <p>
             Your participation in this study is voluntary. At any point, you
@@ -87,6 +98,7 @@
               indicating that you have been briefed concerning the protocols and
               methodologies in the study: (initial)
             </p>
+
             <fieldset>
               <div class="consent-row">
                 <input
@@ -118,6 +130,7 @@
                   test.</label
                 >
               </div>
+
               <div class="consent-row">
                 <input
                   type="text"
@@ -127,12 +140,13 @@
                   maxlength="3"
                   required
                 />
-                <label for="initial-1"
+                <label for="initial-3"
                   >I understand that personal identifiers (initials) will be
                   used during the study Identifiers might be removed from
                   identifiable private information.</label
                 >
               </div>
+
               <div class="consent-row">
                 <input
                   type="text"
@@ -148,6 +162,7 @@
                   and may be presented to the client.</label
                 >
               </div>
+
               <div class="consent-row">
                 <input
                   type="text"
@@ -178,23 +193,52 @@
               </div>
             </fieldset>
 
-            <section id="signature">
+            <div class="signature-block">
+              <div class="signature-field">
+                <input
+                  type="text"
+                  id="printed-name"
+                  name="printed-name"
+                  required
+                />
+                <label for="printed-name">Participant Name (Printed)</label>
+              </div>
 
-              <label for="printed-name">Participant Name (Printed)</label>
-              <input type="text" id="printed-name" name="printed-name" required />
+              <div class="signature-row">
+                <div class="signature-field">
+                  <input
+                    type="text"
+                    id="participant-signature"
+                    name="signature"
+                    required
+                  />
+                  <label for="participant-signature">Participant Signature</label>
+                </div>
 
-              <label for="signature">Participant Signature</label>
-              <input type="text" id="signature" name="signature" required />
-
-              <label for="consent-date">Date</label>
-              <input type="date" id="consent-date" name="consent-date" readonly />
-
-              <button type="submit" class="btn-primary">Take Study</button>
-            </section>
-
+                <div class="signature-field signature-field--date">
+                  <input
+                    type="date"
+                    id="consent-date"
+                    name="consent-date"
+                    readonly
+                    tabindex="-1"
+                  />
+                  <label for="consent-date">Date</label>
+                </div>
+              </div>
+            </div>
           </form>
         </section>
       </article>
+
+      <!-- Below the paper. form="consent-form" ties this button to the form even though it sits outside it -->
+      <div class="consent-actions">
+        <button type="submit" form="consent-form" class="btn-primary take-study-btn">
+          Take Study
+          <!-- TODO: arrow icon from Figma. Export it to assets/images/arrow-right.svg, then add:
+               <img src="assets/images/arrow-right.svg" alt="" width="9" height="8" /> -->
+        </button>
+      </div>
     </main>
 
     <script src="js/consent.js"></script>
