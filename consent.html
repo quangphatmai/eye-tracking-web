@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Consent Form | UVU Eye Tracking</title>
+    <link rel="stylesheet" href="css/variables.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/consent.css" />
+  </head>
+  <body>
+    <!-- HEADER -->
+    <header>
+      <div class="logo-and-sitename">
+        <img src="assets/images/uvu-mono.svg" alt="UVU Logo" class="logo" />
+        <h1>EYE TRACKING TESTS AND RESULTS</h1>
+      </div>
+    </header>
+    <main>
+      <!-- Paper: RESEARCH STUDY CONSENT FORM
+         Sections 1-4: About the Study, What to Expect, Your Data, Voluntary Participation (text only)
+         Section 5: Consent, table of 6 statements, each with an initial box
+         Bottom: Participant Name (Printed), Signature, Date
+         "Take Study" button below the paper -->
+
+      <article id="consent-paper">
+        <section class="consent-header">
+          <h1>RESEARCH STUDY CONSENT FORM</h1>
+          <p>Utah Valley University | Participant Consent for Research</p>
+          <hr class="divider"></hr>
+        </section>
+
+        <section class="consent-info">
+          <h2>1. About the Study</h2>
+          <p>
+            You are invited to participate in a website usability research
+            study. This research project is being conducted by Utah Valley
+            University student researchers.
+          </p>
+          <p>There are no costs for participating in the study. The information will help us understand how people conduct specific tasks. The data collected may not benefit you directly, but what is learned from this study should provide general benefits to UVU and researchers.</p>
+
+          <h2>2. What to Expect</h2>
+          <p>
+            The test will consist of participants being calibrated to an
+            Imotions eye tracker, which will emit a harmless, invisible infrared
+            laser into the participant's eyes. Participants will then complete a
+            pre-test survey to collect demographic information, the eye-tracking
+            portion of the test, where the participant will view a series of
+            stimuli, and a post-survey test. This study will be completed after
+            the interviewer has finished and has no further questions or after a
+            15-25-minute window.
+          </p>
+
+          <h2>3. Your Data</h2>
+          <p>
+            Recordings of the eye-tracting and screencapture from the study will
+            be stored on UVU computers and will be accessible to the
+            researchers. The original recordings will not be shared with the
+            client. All other data gathered from the biometric or survey
+            portions of the test will be used by the UVU researchers for
+            analysis and presented in a summarized format to the client.
+          </p>
+
+          <p>
+            Identifiers might be removed from the identifiable private
+            information, and after such removal, the information could be used
+            for future research studies or distributed to another investigator
+            for future research studies without additional informed consent from
+            you.
+          </p>
+
+          <h2>4. Voluntary Participation</h2>
+          <p>
+            Your participation in this study is voluntary. At any point, you
+            have the option to withdraw from the study. If you have any
+            questions or concerns about this study, contact Professor Dan Hatch
+            at daniel.hatch@uvu.edu.
+          </p>
+        </section>
+
+        <section class="consent-agreement">
+          <form id="consent-form">
+            <h2>5. Consent</h2>
+            <p>
+              If you choose to participate, please initial all the blanks
+              indicating that you have been briefed concerning the protocols and
+              methodologies in the study: (initial)
+            </p>
+            <fieldset>
+              <div class="consent-row">
+                <input
+                  type="text"
+                  id="initial-1"
+                  name="initial-1"
+                  placeholder="initial"
+                  maxlength="3"
+                  required
+                />
+                <label for="initial-1"
+                  >I understand that if eye tracking is being used, an infrared
+                  signal will be utilized, which reflects from the back of my
+                  retina.</label
+                >
+              </div>
+
+              <div class="consent-row">
+                <input
+                  type="text"
+                  id="initial-2"
+                  name="initial-2"
+                  placeholder="initial"
+                  maxlength="3"
+                  required
+                />
+                <label for="initial-2"
+                  >I understand that I can withdraw at any time during the
+                  test.</label
+                >
+              </div>
+              <div class="consent-row">
+                <input
+                  type="text"
+                  id="initial-3"
+                  name="initial-3"
+                  placeholder="initial"
+                  maxlength="3"
+                  required
+                />
+                <label for="initial-1"
+                  >I understand that personal identifiers (initials) will be
+                  used during the study Identifiers might be removed from
+                  identifiable private information.</label
+                >
+              </div>
+              <div class="consent-row">
+                <input
+                  type="text"
+                  id="initial-4"
+                  name="initial-4"
+                  placeholder="initial"
+                  maxlength="3"
+                  required
+                />
+                <label for="initial-4"
+                  >I consent to have any data gathered during my participation
+                  in the study to be used in the analysis by the UVU researchers
+                  and may be presented to the client.</label
+                >
+              </div>
+              <div class="consent-row">
+                <input
+                  type="text"
+                  id="initial-5"
+                  name="initial-5"
+                  placeholder="initial"
+                  maxlength="3"
+                  required
+                />
+                <label for="initial-5"
+                  >I am 18+ years old or the parent or guardian of a participant
+                  17 and under.</label
+                >
+              </div>
+
+              <div class="consent-row">
+                <input
+                  type="text"
+                  id="initial-6"
+                  name="initial-6"
+                  placeholder="initial"
+                  maxlength="3"
+                  required
+                />
+                <label for="initial-6"
+                  >I consent to participate in the study.</label
+                >
+              </div>
+            </fieldset>
+
+            <section id="signature">
+
+              <label for="printed-name">Participant Name (Printed)</label>
+              <input type="text" id="printed-name" name="printed-name" required />
+
+              <label for="signature">Participant Signature</label>
+              <input type="text" id="signature" name="signature" required />
+
+              <label for="consent-date">Date</label>
+              <input type="date" id="consent-date" name="consent-date" readonly />
+
+              <button type="submit" class="btn-primary">Take Study</button>
+            </section>
+
+          </form>
+        </section>
+      </article>
+    </main>
+
+    <script src="js/consent.js"></script>
+  </body>
+</html>

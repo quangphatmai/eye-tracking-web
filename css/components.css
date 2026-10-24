@@ -1,0 +1,66 @@
+/* Shared components, used on every page */
+
+/* .site-header: white bar, UVU logo + "UVU EYE TRACKING TESTS AND RESULTS" */
+
+/* .btn-primary: solid green button (Save, Next, Add Participant, Take Study, Done) */
+/* .btn-outline: white button with green border (Back, Results, Edit Study, + Add task) */
+/* .btn-pill: small rounded green pill (+ New Study, + Member) */
+
+/* .study-card: image area + title row + site name + buttons */
+/*   .study-card--draft | --in-progress | --completed  (status dot color, Results button visible or not) */
+
+/* Header */
+header {
+  display: flex;
+  padding: 0 var(--space-12);
+  justify-content: space-between;
+  align-items: center;
+  align-self: stretch;
+  height: 74px;
+  border-bottom: 1px solid #ddd;
+}
+
+header h1 {
+  line-height: 1;
+  position: relative;
+  top: 2px; /* chỉnh 1–2px cho đến khi thẳng hàng */
+  color: var(--color-green);
+  font-family: var(--font-heading);
+  font-size: 20px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+header .logo {
+  width: 66.172px;
+  height: 20.22px;
+}
+
+header .logo-and-sitename {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+/* header .new-study-button {
+  background: var(--color-green);
+  color: var(--color-bg-white);
+  border-radius: 25px;
+  font-family: Rajdhani;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 19.8px; 
+  text-transform: uppercase;
+  display: flex;
+  padding: 7px 20px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border: none;
+  cursor: pointer;
+} */
+
+/* .new-study-button:hover {
+  background: var(--color-green-dark);
+} */

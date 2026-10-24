@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Study | UVU Eye Tracking</title>
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/new-study.css">
+</head>
+<body>
+
+  <!-- HEADER (no "+ NEW STUDY" button here) -->
+    <header>
+      <div class="logo-and-sitename">
+        <img src="assets/images/uvu-mono.svg" alt="UVU Logo" class="logo" />
+        <h1>EYE TRACKING TESTS AND RESULTS</h1>
+      </div>
+    </header>
+  <main>
+    <!-- Back button -->
+    <!-- Heading: NEW STUDY -->
+    <!-- ADD PROJECT NAME: (editable text) -->
+    <!-- TEAM MEMBERS: "+ MEMBER" pill -->
+    <!-- TASKS: instruction line, then Task 1 block (task textarea + URL box), "+ Add task", Save -->
+    <!-- Note: the "Draft" frame in Figma is this same page for editing a draft. Reuse it. -->
+
+      <main class="form-page">
+
+    <a href="index.html" class="btn-outline">← Back</a>
+
+    <h1>NEW STUDY</h1>
+
+    <form id="study-form">
+
+      <!-- 1. Project name -->
+      <section class="form-section">
+        <label for="project-name" class="section-label">ADD PROJECT NAME:</label>
+        <input type="text" id="project-name" name="project-name"
+               placeholder="PROJECT NAME" required>
+      </section>
+
+      <!-- 2. Team members -->
+      <section class="form-section">
+        <h2>TEAM MEMBERS:</h2>
+        <ul id="member-list"></ul>   <!-- JS thêm từng thành viên vào đây -->
+        <button type="button" id="add-member" class="btn-pill">+ MEMBER</button>
+      </section>
+
+      <!-- 3. Tasks -->
+      <section class="form-section">
+        <h2>TASKS:</h2>
+        <p>Write each task in the box and attach the link associated with the task.</p>
+
+        <div id="task-list">
+          <div class="task-block">            <!-- khối lặp lại -->
+            <label for="task-1">TASK 1:</label>
+            <textarea id="task-1" name="task-1" placeholder="Write task here..."></textarea>
+
+            <label for="task-1-url">ATTACH URL LINK BELOW:</label>
+            <input type="url" id="task-1-url" name="task-1-url" placeholder="URL link goes here...">
+          </div>
+        </div>
+
+        <button type="button" id="add-task" class="btn-outline">+ Add task</button>
+      </section>
+
+      <button type="submit" class="btn-primary">Save</button>
+    </form>
+
+  </main>
+
+
+  <script src="js/data/studies.js"></script>
+  <script src="js/new-study.js"></script>
+</body>
+</html>

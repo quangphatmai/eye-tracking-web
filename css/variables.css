@@ -1,0 +1,45 @@
+:root {
+  /* UVU brand colors (hex from the UVU Design Systems doc, website values) */
+  --color-green: #275d38; /* Primary Green */
+  --color-green-dark: #1A4127; /* Primary: Dark Green */
+  --color-forest: #00843d; /* Secondary: Forest */
+  --color-green-light: #4ba23f; /* Secondary: Clover */
+  --color-fern: #78be20; /* Tertiary: Fern */
+  --color-lime: #c5e86c; /* Tertiary: Lime */
+  --color-aqua: #86c8bc;
+  --color-red: #e15230;
+
+  /* Neutrals + UI colors (sampled from the Figma, not part of the brand palette) */
+  --color-bg-page: #f0f0f0;
+  --color-bg-white: #ffffff;
+  --color-field: #e8e8e8;
+  --color-card-image: #c4c4c4;
+  --color-text: #000000;
+  --color-text-muted: #7a7a7a;
+
+  /* Study status colors */
+  --color-status-progress: #3b6fd4;
+  --color-status-draft: #7a7a7a;
+  --color-status-completed: #4ba23f;
+
+  /* Typography: Rajdhani for h1-h4, Lato for body and buttons, Arial as fallback */
+  --font-heading: "Rajdhani", Arial, sans-serif;
+  --font-body: "Lato", Arial, sans-serif;
+
+  /* Spacing: every step is a multiple of 4px. Name = px / 4 (so --space-4 = 16px) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-14: 56px;
+  --space-16: 64px;
+  --space-18: 72px;
+
+  --radius: 8px; /* one radius for cards, buttons, inputs. Pills use 999px, circles 50% */
+  --shadow-card: 0 1px 6px 0 rgba(0, 0, 0, 0.25);
+}

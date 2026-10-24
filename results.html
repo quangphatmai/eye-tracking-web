@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Results | UVU Eye Tracking</title>
+    <link rel="stylesheet" href="css/variables.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/results.css" />
+  </head>
+  <body>
+    <!-- HEADER -->
+
+    <!-- Heading: PARTICIPANTS, "Edit Study" button (top right) -->
+    <!-- Tabs: PARTICIPANT 1 | 2 | 3 | 4 -->
+    <!-- Heat map area: screenshot of the tested site + heat map overlay + play button -->
+    <!-- Task title + task text, Comments + comment text -->
+    <!-- Bottom buttons: "Done", "Task 2 →" -->
+    <main class="results-page">
+      <!-- 1. Hàng nút trên cùng: Back (trái) và Edit Study (phải) -->
+      <div class="page-actions">
+        <a href="index.html" class="btn-outline">← Back</a>
+        <a href="new-study.html" class="btn-outline">Edit Study →</a>
+      </div>
+
+      <h1>PARTICIPANTS</h1>
+
+      <!-- 2. Tab chọn participant -->
+      <div class="participant-tabs" role="tablist">
+        <button class="tab active" role="tab" data-participant="1">
+          PARTICIPANT 1
+        </button>
+        <button class="tab" role="tab" data-participant="2">
+          PARTICIPANT 2
+        </button>
+        <button class="tab" role="tab" data-participant="3">
+          PARTICIPANT 3
+        </button>
+        <button class="tab" role="tab" data-participant="4">
+          PARTICIPANT 4
+        </button>
+      </div>
+
+      <!-- 3. Vùng kết quả: nội dung bên trong thay đổi theo tab và task -->
+      <section class="result-panel" id="result-panel" role="tabpanel">
+        <!-- 3a. Khung chứa kết quả test (screenshot + heat map, sau này là video) -->
+        <div class="result-media" id="result-media">
+          <img class="screenshot" src="" alt="Tested website screenshot" />
+          <canvas class="heatmap"></canvas>
+          <button
+            class="play-btn"
+            id="play-btn"
+            aria-label="Play recording"
+          >Play</button>
+        </div>
+
+        <!-- 3b. Thông tin task -->
+        <div class="task-info">
+          <h2 id="task-title">Task 1:</h2>
+          <p id="task-text"></p>
+
+          <h3>Comments:</h3>
+          <p id="task-comments"></p>
+        </div>
+
+        <!-- 3c. Chuyển task -->
+        <div class="task-nav">
+          <button class="btn-primary" id="prev-task" hidden>← Task 1</button>
+          <button class="btn-primary" id="next-task">Task 2 →</button>
+        </div>
+      </section>
+    </main>
+
+    <script src="js/data/studies.js"></script>
+    <script src="js/results.js"></script>
+  </body>
+</html>

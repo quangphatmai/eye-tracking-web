@@ -1,0 +1,212 @@
+/* Home page */
+/* .filter-bar: ALL STUDIES / RECENTS / DRAFTS / IN PROGRESS / COMPLETED + search icon */
+/* .study-grid: 3 columns, cards centered */
+
+
+
+/* Study Grid */
+
+#study-grid {
+  display: grid;
+  row-gap: var(--space-8);
+  column-gap: var(--space-8);
+  flex-shrink: 0;
+  grid-template-rows: repeat(3, 1fr);
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-flow: row;
+  max-width: 80%;
+  margin: var(--space-16) auto 0 auto;
+}
+
+/* Study Card */
+
+#study-grid .study-card {
+  background: var(--color-bg-white);
+  /* border-radius: var(--radius); */
+  /* box-shadow: var(--shadow-card); */
+  overflow: hidden; /* để vùng ảnh xám bị cắt theo góc bo */
+  display: flex;
+  padding: 0; /* ảnh sát mép card; padding chuyển xuống .card-actions và .study-info */
+  flex-direction: column;
+  gap: var(--space-3);
+  align-self: stretch;
+  grid-row: span 1;
+  grid-column: span 1;
+  justify-self: stretch;
+}
+
+
+
+#study-grid .study-card .study-info {
+  padding-bottom: var(--space-4);
+}
+
+.thumbnail-section {
+  position: relative; /* để sau này đặt status, Delete, Edit chồng lên */
+  aspect-ratio: 16 / 10; /* chiều cao tự tính theo chiều rộng card, không dùng px cố định */
+}
+
+/* Nhãn status nằm chồng lên góc trên trái của ảnh (như Figma), không chiếm hàng riêng */
+.thumbnail-section .status-badge {
+  position: absolute; /* giữ nguyên: badge nằm chồng lên ảnh */
+  top: var(--space-2);
+  left: var(--space-4);
+  z-index: 1;
+  color: var(--color-bg-white);
+  display: inline-flex; /* thêm 3 dòng này */
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  background: rgba(193, 194, 196, 0.6); /* đen mờ, ảnh phía sau vẫn thấp thoáng */
+  border-radius: 999px; /* bo tròn hai đầu */
+  font-size: 14px;
+}
+
+.thumbnail-section .status-badge::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background-color: var(
+    --status-color,
+    var(--color-status-progress)
+  ); /* mặc định là màu progress nếu chưa set status-color */
+}
+
+.thumbnail-section .thumbnail-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* lấp đầy khung, giữ tỉ lệ ảnh, cắt phần thừa thay vì kéo méo */
+  background: var(--color-card-image);
+}
+
+.card-actions {
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+}
+
+.card-actions button {
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: var(--radius);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+  font-size: 12px;
+  color: #000;
+}
+
+.card-actions button:hover{
+  color: #8E8C89;
+}
+
+/* Study Card Information */
+
+.study-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.study-info h2 {
+  color: var(--color-green);
+  font-family: var(--font-heading);
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 100%;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  margin: 0;
+  padding: var(--space-3) 0 0 0;
+}
+
+.study-info p {
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px; /* 142.857% */
+  margin: 0;
+  padding: var(--space-2) 0 0 0;
+}
+
+.study-info .add-participant-btn {
+  margin-top: var(--space-4);
+  background: var(--color-green);
+  color: var(--color-bg-white);
+  border-radius: var(--radius);
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  display: flex;
+  padding: var(--space-2) var(--space-5);
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-3);
+  border: none;
+  cursor: pointer;
+}
+
+.study-info .add-participant-btn:hover {
+  background: var(--color-green-dark);
+}
+
+.study-info .add-participant-btn:active {
+  background: var(--color-green-light);
+}
+
+.study-info .add-participant-btn:focus {
+  outline: 1px solid var(--color-green);
+  outline-offset: 1px;
+}
+
+.study-info .add-participant-btn:disabled {
+  background: var(--color-field);
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}
+
+.study-info .add-participant-btn:disabled:hover {
+  background: var(--color-field);
+  color: var(--color-text-muted);
+}
+
+.study-info .results-btn {
+  margin-top: var(--space-2);
+  background: var(--color-white);
+  color: var(--color-green);
+  border-radius: var(--radius);
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  display: flex;
+  padding: var(--space-2) var(--space-5);
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-3);
+  border: 1px solid var(--color-green);
+  cursor: pointer;
+}
+
+.study-info .results-btn:hover {
+  background: var(--color-green-dark);
+  color: var(--color-bg-white);
+}
+
+.study-info .results-btn:active {
+  background: var(--color-green-light);
+  color: var(--color-bg-white);
+}
+
+.study-info .results-btn:focus {
+  outline: 1px solid var(--color-green);
+  outline-offset: 1px;
+}
