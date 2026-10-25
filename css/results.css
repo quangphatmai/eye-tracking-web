@@ -1,5 +1,205 @@
 /* Results */
-/* .participant-tabs: 4 tabs, active tab has green top border */
-/* .heatmap-view: screenshot + heat map overlay + play button in the center */
-/* .task-info: Task title + Comments */
-/* .results-nav: Done (left-center) and Task 2 → (right) */
+/* .results-toolbar: RESULTS heading + participant tabs (scrollable .tab-bar-scroll from components.css) */
+/* .results-viewer: slides side by side (heatmap, scanpath), scroll sideways */
+/* .results-details: task text + comments, side by side */
+/* .results-actions: Done (left), Edit Study + Task 2 → (right) */
+
+/* Page: same width as the home page grid */
+
+.results-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  max-width: 80%;
+  margin: var(--space-8) auto var(--space-16) auto;
+}
+
+.results-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: var(--space-4);
+}
+
+/* the tabs take the space next to the heading and scroll when there are too many */
+.results-toolbar .tab-bar-scroll {
+  flex: 0 1 auto;
+}
+
+.results-toolbar h1 {
+  margin: 0;
+  color: var(--color-text);
+  font-family: var(--font-heading);
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.results-message {
+  margin: 0;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.results-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+/* Viewer */
+
+.results-viewer-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.results-viewer {
+  display: flex;
+  width: 100%;
+  max-width: 800px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory; /* a swipe lands exactly on a slide */
+  scrollbar-width: none; /* the Heatmap / Scanpath buttons below show where you are */
+}
+
+.results-viewer::-webkit-scrollbar {
+  display: none;
+}
+
+.result-slide {
+  flex: none;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: var(--color-card-image);
+  scroll-snap-align: start;
+}
+
+.result-slide video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: var(--color-text);
+}
+
+/* No video yet: placeholder with the study thumbnail behind a dark layer */
+.video-placeholder {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-1);
+  width: 100%;
+  height: 100%;
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url("../assets/images/sample_image.png") center / cover;
+  color: var(--color-bg-white);
+  text-align: center;
+}
+
+.video-placeholder strong {
+  font-family: var(--font-heading);
+  font-size: 24px;
+  text-transform: uppercase;
+}
+
+/* Heatmap / Scanpath buttons under the viewer */
+
+.viewer-switch {
+  display: flex;
+  gap: var(--space-6);
+}
+
+.viewer-switch-item {
+  padding: var(--space-1) 0;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--color-text-secondary);
+  font-family: var(--font-heading);
+  font-size: 16px;
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.viewer-switch-item:hover {
+  color: var(--color-text);
+}
+
+.viewer-switch-item.is-active {
+  border-bottom-color: var(--color-green);
+  color: var(--color-text);
+}
+
+.viewer-switch-item:focus-visible {
+  outline: 2px solid var(--color-green);
+  outline-offset: 2px;
+}
+
+/* Task text + comments */
+
+.results-details {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-10);
+}
+
+.detail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.detail p {
+  margin: 0;
+}
+
+.detail-title {
+  margin: 0;
+  color: var(--color-text);
+  font-family: var(--font-heading);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+/* Buttons: the look comes from .btn-primary / .btn-outline in components.css */
+
+.results-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.results-actions-right {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+/* Narrow screens */
+
+@media (max-width: 720px) {
+  .results-page {
+    max-width: none;
+    margin: var(--space-6) var(--space-4) var(--space-12);
+  }
+
+  .results-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .results-details {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+}

@@ -222,8 +222,9 @@
 
 .study-info .results-btn {
   margin-top: var(--space-2);
-  background: var(--color-white);
+  background: var(--color-bg-white);
   color: var(--color-green);
+  text-decoration: none; /* Results is a link when it can be opened */
   border-radius: var(--radius);
   font-family: var(--font-body);
   font-size: 16px;
@@ -251,4 +252,17 @@
 .study-info .results-btn:focus {
   outline: 1px solid var(--color-green);
   outline-offset: 1px;
+}
+
+/* Results with nobody to show yet (in progress, no participants) */
+.study-info .results-btn:disabled {
+  background: var(--color-field);
+  border-color: var(--color-field);
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}
+
+.study-info .results-btn:disabled:hover {
+  background: var(--color-field);
+  color: var(--color-text-muted);
 }

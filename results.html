@@ -11,68 +11,73 @@
   </head>
   <body>
     <!-- HEADER -->
+    <header>
+      <div class="logo-and-sitename">
+        <img src="assets/images/uvu-mono.svg" alt="UVU Logo" class="logo" />
+        <h1>EYE TRACKING TESTS AND RESULTS</h1>
+      </div>
+    </header>
 
-    <!-- Heading: PARTICIPANTS, "Edit Study" button (top right) -->
-    <!-- Tabs: PARTICIPANT 1 | 2 | 3 | 4 -->
-    <!-- Heat map area: screenshot of the tested site + heat map overlay + play button -->
-    <!-- Task title + task text, Comments + comment text -->
-    <!-- Bottom buttons: "Done", "Task 2 →" -->
+    <!-- The study comes from the link: results.html?study=5 (see js/results.js) -->
     <main class="results-page">
-      <!-- 1. Hàng nút trên cùng: Back (trái) và Edit Study (phải) -->
-      <div class="page-actions">
-        <a href="index.html" class="btn-outline">← Back</a>
-        <a href="new-study.html" class="btn-outline">Edit Study →</a>
+      <!-- Heading RESULTS + participant tabs. The tabs are made by js/results.js (one per participant)
+           and scroll sideways with ‹ › buttons when there are too many -->
+      <div class="results-toolbar">
+        <h1>Results</h1>
+        <div class="tab-bar-scroll" id="participant-scroller">
+          <button type="button" class="tab-bar-arrow tab-bar-arrow--prev" aria-label="Show previous participants">&lsaquo;</button>
+          <nav id="participant-tabs" class="tab-bar" aria-label="Participants"></nav>
+          <button type="button" class="tab-bar-arrow tab-bar-arrow--next" aria-label="Show next participants">&rsaquo;</button>
+        </div>
       </div>
 
-      <h1>PARTICIPANTS</h1>
+      <!-- Shown instead of the content when there is nothing to show (draft, no participants, unknown study) -->
+      <p class="results-message" id="results-message" hidden></p>
 
-      <!-- 2. Tab chọn participant -->
-      <div class="participant-tabs" role="tablist">
-        <button class="tab active" role="tab" data-participant="1">
-          PARTICIPANT 1
-        </button>
-        <button class="tab" role="tab" data-participant="2">
-          PARTICIPANT 2
-        </button>
-        <button class="tab" role="tab" data-participant="3">
-          PARTICIPANT 3
-        </button>
-        <button class="tab" role="tab" data-participant="4">
-          PARTICIPANT 4
-        </button>
+      <div class="results-content" id="results-content">
+        <!-- Viewer: slides sit side by side, scroll sideways to go from the heatmap to the scanpath.
+             js/results.js puts a <video> in each slide, or a placeholder while there is no video -->
+        <section class="results-viewer-section" aria-label="Recordings">
+          <div class="results-viewer" id="results-viewer">
+            <div class="result-slide" id="slide-heatmap"></div>
+            <div class="result-slide" id="slide-scanpath"></div>
+          </div>
+          <div class="viewer-switch" id="viewer-switch">
+            <button type="button" class="viewer-switch-item is-active" aria-pressed="true">Heatmap</button>
+            <button type="button" class="viewer-switch-item" aria-pressed="false">Scanpath</button>
+          </div>
+        </section>
+
+        <!-- Task text (from New Study) + comments for this participant and this task -->
+        <div class="results-details">
+          <div class="detail">
+            <h2 class="detail-title" id="task-title">Task 1:</h2>
+            <p id="task-text"></p>
+          </div>
+          <div class="detail">
+            <label for="task-comments" class="detail-title">Comments:</label>
+            <textarea
+              id="task-comments"
+              class="field-box"
+              placeholder="Write comments here..."
+            ></textarea>
+          </div>
+        </div>
+
+        <!-- Done saves the comments and goes home. Edit Study has no page yet (# for now) -->
+        <div class="results-actions">
+          <button type="button" id="done-btn" class="btn-primary">Done</button>
+          <div class="results-actions-right">
+            <button type="button" id="prev-task" class="btn-outline" hidden>&larr; Task 1</button>
+            <a href="#" class="btn-outline">Edit Study &rarr;</a>
+            <button type="button" id="next-task" class="btn-primary">Task 2 &rarr;</button>
+          </div>
+        </div>
       </div>
-
-      <!-- 3. Vùng kết quả: nội dung bên trong thay đổi theo tab và task -->
-      <section class="result-panel" id="result-panel" role="tabpanel">
-        <!-- 3a. Khung chứa kết quả test (screenshot + heat map, sau này là video) -->
-        <div class="result-media" id="result-media">
-          <img class="screenshot" src="" alt="Tested website screenshot" />
-          <canvas class="heatmap"></canvas>
-          <button
-            class="play-btn"
-            id="play-btn"
-            aria-label="Play recording"
-          >Play</button>
-        </div>
-
-        <!-- 3b. Thông tin task -->
-        <div class="task-info">
-          <h2 id="task-title">Task 1:</h2>
-          <p id="task-text"></p>
-
-          <h3>Comments:</h3>
-          <p id="task-comments"></p>
-        </div>
-
-        <!-- 3c. Chuyển task -->
-        <div class="task-nav">
-          <button class="btn-primary" id="prev-task" hidden>← Task 1</button>
-          <button class="btn-primary" id="next-task">Task 2 →</button>
-        </div>
-      </section>
     </main>
 
     <script src="js/data/studies.js"></script>
+    <script src="js/tab-bar.js"></script>
     <script src="js/results.js"></script>
   </body>
 </html>

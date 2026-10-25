@@ -1,6 +1,6 @@
 /* New Study form */
 /* .form-page: grey background, content column on the left */
-/* .field-box: grey input/textarea boxes (task, URL, member) */
+/* .field-box: grey input/textarea boxes (task, URL) */
 /* .task-block: "TASK 1:" label + textarea + "ATTACH URL LINK BELOW:" + URL box */
 /* Same page structure as consent.css / add-participant.css: grey page, 64px top, 72px bottom */
 
@@ -92,77 +92,73 @@
   border-bottom-color: var(--color-green);
 }
 
-/* Grey boxes (textarea, URL, member name) */
+/* Grey boxes (textarea, URL): .field-box in components.css */
 
-.field-box {
-  width: 100%;
-  padding: var(--space-3) var(--space-4);
-  background: var(--color-field);
-  border: none;
-  border-radius: var(--radius);
-  color: var(--color-text);
-}
+/* Team members: name pills side by side, then the + Member button. Wraps to a new line when full */
 
-input.field-box {
-  height: 44px; /* same height as the inputs on the add participant popup */
-  padding-top: 0;
-  padding-bottom: 0;
-}
-
-textarea.field-box {
-  min-height: 96px;
-  resize: vertical; /* user can make it taller, not wider */
-}
-
-.field-box::placeholder {
-  color: var(--color-text-muted);
-  opacity: 1;
-}
-
-.field-box:focus-visible {
-  outline: 2px solid var(--color-green);
-  outline-offset: 2px;
-}
-
-/* Team members */
-
-#member-list {
+.member-list {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
   gap: var(--space-2);
   width: 100%;
-  max-width: 320px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-#member-list:empty {
-  display: none; /* no empty gap above the + Member button */
+.member-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: 36px; /* same height as the + Member pill */
+  max-width: 100%;
+  padding: var(--space-1) var(--space-1) var(--space-1) var(--space-4);
+  background: var(--color-field);
+  border-radius: 999px; /* pills use 999px (see --radius in variables.css) */
+  color: var(--color-text);
 }
 
-#member-list li {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
+.member-name {
+  overflow-wrap: anywhere; /* a very long name wraps inside its pill */
+}
+
+/* the pill while its name is being typed */
+.member-chip:focus-within {
+  outline: 2px solid var(--color-green);
+  outline-offset: 2px;
+}
+
+.member-input {
+  width: 160px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  outline: none; /* the pill draws the focus ring */
+  font: inherit;
+}
+
+.member-input::placeholder {
+  color: var(--color-text-muted);
+  opacity: 1;
 }
 
 .member-remove {
   flex: none;
-  width: var(--space-10);
-  height: var(--space-10);
+  width: var(--space-6);
+  height: var(--space-6);
   padding: 0;
   background: transparent;
   border: none;
-  border-radius: var(--radius);
+  border-radius: 50%;
   color: var(--color-text);
-  font-size: 20px;
+  font-size: 18px;
   line-height: 1;
   cursor: pointer;
 }
 
 .member-remove:hover {
-  background: var(--color-field);
+  background: var(--color-border);
 }
 
 .member-remove:focus-visible {

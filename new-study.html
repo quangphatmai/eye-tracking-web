@@ -40,11 +40,15 @@
             />
           </section>
 
-          <!-- 2. Team members: js/new-study.js adds one row per member -->
+          <!-- 2. Team members: js/new-study.js adds a name pill for each member before the + Member button.
+               The pills sit side by side and wrap to the next line when the row is full -->
           <section class="form-section">
             <h2>Team Members:</h2>
-            <ul id="member-list"></ul>
-            <button type="button" id="add-member" class="btn-pill">+ Member</button>
+            <ul id="member-list" class="member-list">
+              <li class="member-add">
+                <button type="button" id="add-member" class="btn-pill">+ Member</button>
+              </li>
+            </ul>
           </section>
 
           <!-- 3. Tasks -->

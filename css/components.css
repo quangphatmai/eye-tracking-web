@@ -217,3 +217,89 @@ header .logo-and-sitename {
   outline: 2px solid var(--color-green);
   outline-offset: 2px;
 }
+
+/* Scrollable tab bar: for tabs that can be many (participants). The tabs scroll sideways and the
+   ‹ › buttons only show when they do not all fit. Behavior: initTabBarScroll() in js/tab-bar.js */
+.tab-bar-scroll {
+  display: flex;
+  min-width: 0; /* lets the bar shrink below the width of all its tabs */
+}
+
+.tab-bar-scroll .tab-bar {
+  position: relative; /* tab.offsetLeft is measured from here */
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none; /* the arrows replace the scrollbar */
+}
+
+.tab-bar-scroll .tab-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.tab-bar-scroll .tab-bar-item {
+  flex: none;
+  padding: var(--space-8);
+}
+
+.tab-bar-arrow {
+  display: none;
+  flex: none;
+  padding: 0 var(--space-4);
+  background: var(--color-bg-page);
+  border: none;
+  border-top: 4px solid transparent; /* same top/bottom lines as the tabs so heights match */
+  border-bottom: 1px solid var(--color-green);
+  color: var(--color-text);
+  font-size: 32px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.tab-bar-scroll.has-overflow .tab-bar-arrow {
+  display: block;
+}
+
+.tab-bar-arrow:hover:not(:disabled) {
+  background: var(--color-field);
+}
+
+.tab-bar-arrow:disabled {
+  color: var(--color-text-muted);
+  cursor: default;
+}
+
+.tab-bar-arrow:focus-visible {
+  outline: 2px solid var(--color-green);
+  outline-offset: -2px;
+}
+
+/* .field-box: grey input / textarea box (task, URL, member name, comments) */
+.field-box {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-field);
+  border: none;
+  border-radius: var(--radius);
+  color: var(--color-text);
+}
+
+input.field-box {
+  height: 44px; /* same height as the inputs on the add participant popup */
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+textarea.field-box {
+  min-height: 96px;
+  resize: vertical; /* user can make it taller, not wider */
+}
+
+.field-box::placeholder {
+  color: var(--color-text-muted);
+  opacity: 1;
+}
+
+.field-box:focus-visible {
+  outline: 2px solid var(--color-green);
+  outline-offset: 2px;
+}
