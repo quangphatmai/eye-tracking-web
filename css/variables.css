@@ -10,17 +10,18 @@
   --color-red: #e15230;
 
   /* Neutrals + UI colors (sampled from the Figma, not part of the brand palette) */
-  --color-bg-page: #f0f0f0;
+  --color-bg-page: #F9F9F9;
   --color-bg-white: #ffffff;
   --color-field: #e8e8e8;
   --color-card-image: #c4c4c4;
   --color-border: #d1d1d1;
   --color-text: #000000;
   --color-text-muted: #7a7a7a;
+  --color-text-secondary: #555555; /* inactive tabs: darker than muted so it stays readable on grey */
 
   /* Study status colors */
   --color-status-progress: #3b6fd4;
-  --color-status-draft: #7a7a7a;
+  --color-status-draft: #555555;
   --color-status-completed: #4ba23f;
 
   /* Typography: Rajdhani for h1-h4, Lato for body and buttons, Arial as fallback */

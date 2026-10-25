@@ -1,8 +1,19 @@
 /* Home page */
-/* .filter-bar: ALL STUDIES / RECENTS / DRAFTS / IN PROGRESS / COMPLETED + search icon */
+/* .filter-bar: the tab bar (ALL STUDIES / IN PROGRESS / COMPLETED / DRAFTS) + the New Study button on the right */
 /* .study-grid: 3 columns, cards centered */
 
 
+
+/* Filter bar: tabs on the left, + New Study button on the right. Same width as the grid below */
+
+.filter-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-4);
+  max-width: 80%;
+  margin: var(--space-8) auto 0 auto;
+}
 
 /* Study Grid */
 
@@ -15,7 +26,19 @@
   grid-template-columns: repeat(3, 1fr);
   grid-auto-flow: row;
   max-width: 80%;
-  margin: var(--space-16) auto 0 auto;
+  margin: var(--space-6) auto 0 auto; /* space under the filter bar */
+}
+
+/* a filtered-out card: display:flex on .study-card would beat the hidden attribute without this */
+#study-grid .study-card[hidden] {
+  display: none;
+}
+
+.no-studies {
+  max-width: 80%;
+  margin: var(--space-8) auto 0 auto;
+  color: var(--color-text-muted);
+  text-align: center;
 }
 
 /* Study Card */
@@ -52,26 +75,45 @@
   top: var(--space-2);
   left: var(--space-4);
   z-index: 1;
-  color: var(--color-bg-white);
+  color: var(--color-text);
   display: inline-flex; /* thêm 3 dòng này */
   align-items: center;
   gap: var(--space-2);
   padding: var(--space-1) var(--space-3);
-  background: rgba(193, 194, 196, 0.6); /* đen mờ, ảnh phía sau vẫn thấp thoáng */
+  background: var(--color-bg-white); /* solid, so it is readable on any thumbnail */
+  box-shadow: var(--shadow-card); /* keeps the pill visible on white or very light images */
   border-radius: 999px; /* bo tròn hai đầu */
   font-size: 14px;
 }
 
 .thumbnail-section .status-badge::before {
   content: "";
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   flex-shrink: 0;
   background-color: var(
     --status-color,
     var(--color-status-progress)
   ); /* mặc định là màu progress nếu chưa set status-color */
+}
+
+/* Status dot color per card variant (badge style stays the same, only the dot changes) */
+.study-card--draft {
+  --status-color: var(--color-status-draft);
+}
+
+.study-card--in-progress {
+  --status-color: var(--color-status-progress);
+}
+
+.study-card--completed {
+  --status-color: var(--color-status-completed);
+}
+
+/* Drafts have no results yet: hide the button but keep its space so the cards line up */
+.study-card--draft .results-btn {
+  visibility: hidden;
 }
 
 .thumbnail-section .thumbnail-image {
