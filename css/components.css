@@ -3,6 +3,36 @@
 /* .site-header: white bar, UVU logo + "UVU EYE TRACKING TESTS AND RESULTS" */
 
 /* .btn-primary: solid green button (Save, Next, Add Participant, Take Study, Done) */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  background: var(--color-green);
+  color: var(--color-bg-white);
+  border: none;
+  border-radius: var(--radius); /* same radius as the buttons on the home page */
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background: var(--color-green-dark);
+}
+
+.btn-primary:active {
+  background: var(--color-green-light);
+}
+
+.btn-primary:focus-visible {
+  outline: 2px solid var(--color-green);
+  outline-offset: 2px;
+}
+
 /* .btn-outline: white button with green border (Back, Results, Edit Study, + Add task) */
 /* .btn-pill: small rounded green pill (+ New Study, + Member) */
 
