@@ -1,4 +1,213 @@
 /* New Study form */
 /* .form-page: grey background, content column on the left */
-/* .field-box: grey input/textarea boxes (task, URL) */
+/* .field-box: grey input/textarea boxes (task, URL, member) */
 /* .task-block: "TASK 1:" label + textarea + "ATTACH URL LINK BELOW:" + URL box */
+/* Same page structure as consent.css / add-participant.css: grey page, 64px top, 72px bottom */
+
+/* Page */
+
+.form-page {
+  min-height: calc(100vh - 74px); /* grey fills the screen under the 74px header */
+  padding: var(--space-16) var(--space-4) var(--space-18);
+  background: var(--color-bg-page);
+}
+
+.form-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* buttons keep their own width instead of stretching */
+  gap: var(--space-6);
+  width: 100%;
+  max-width: 1000px; /* same width as the paper on the consent page */
+  margin: 0 auto;
+}
+
+.form-content h1 {
+  margin: 0;
+  color: var(--color-text);
+  font-family: var(--font-heading);
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+/* Form: spacing between sections comes from `gap`, not from margins */
+
+#study-form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-10);
+  width: 100%;
+}
+
+.form-section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  width: 100%;
+}
+
+.form-section h2,
+.section-label {
+  margin: 0;
+  color: var(--color-text);
+  font-family: var(--font-heading);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.form-section p {
+  margin: 0;
+}
+
+/* Project name: text with a line under it, no box */
+
+.project-name-input {
+  width: 100%;
+  max-width: 320px;
+  height: 44px;
+  padding: 0 var(--space-1);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid var(--color-text-muted);
+  border-radius: 0;
+  color: var(--color-text);
+  font-family: var(--font-heading);
+  font-size: 20px;
+  text-transform: uppercase;
+}
+
+.project-name-input::placeholder {
+  color: var(--color-text-muted);
+  opacity: 1; /* Firefox makes placeholders lighter by default */
+}
+
+.project-name-input:focus-visible {
+  outline: none;
+  border-bottom-color: var(--color-green);
+}
+
+/* Grey boxes (textarea, URL, member name) */
+
+.field-box {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-field);
+  border: none;
+  border-radius: var(--radius);
+  color: var(--color-text);
+}
+
+input.field-box {
+  height: 44px; /* same height as the inputs on the add participant popup */
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+textarea.field-box {
+  min-height: 96px;
+  resize: vertical; /* user can make it taller, not wider */
+}
+
+.field-box::placeholder {
+  color: var(--color-text-muted);
+  opacity: 1;
+}
+
+.field-box:focus-visible {
+  outline: 2px solid var(--color-green);
+  outline-offset: 2px;
+}
+
+/* Team members */
+
+#member-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+  max-width: 320px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+#member-list:empty {
+  display: none; /* no empty gap above the + Member button */
+}
+
+#member-list li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.member-remove {
+  flex: none;
+  width: var(--space-10);
+  height: var(--space-10);
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius);
+  color: var(--color-text);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.member-remove:hover {
+  background: var(--color-field);
+}
+
+.member-remove:focus-visible {
+  outline: 2px solid var(--color-green);
+  outline-offset: 2px;
+}
+
+/* Tasks */
+
+#task-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  width: 100%;
+}
+
+.task-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.task-block label {
+  color: var(--color-text);
+  font-family: var(--font-heading);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.task-block .field-box + label {
+  margin-top: var(--space-4); /* space between the task box and the URL label */
+}
+
+/* Save: the button style itself is .btn-primary in components.css */
+
+.save-btn {
+  padding: var(--space-4) var(--space-8); /* same size as the Next button on add participant */
+}
+
+/* Narrow screens */
+
+@media (max-width: 720px) {
+  .form-page {
+    padding: var(--space-8) var(--space-4) var(--space-12);
+  }
+}

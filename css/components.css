@@ -34,6 +34,39 @@
 }
 
 /* .btn-outline: white button with green border (Back, Results, Edit Study, + Add task) */
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  background: var(--color-bg-white);
+  color: var(--color-green);
+  border: 1px solid var(--color-green);
+  border-radius: var(--radius);
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+  text-decoration: none; /* so it also works on <a> */
+  cursor: pointer;
+}
+
+.btn-outline:hover {
+  background: var(--color-green-dark);
+  color: var(--color-bg-white);
+}
+
+.btn-outline:active {
+  background: var(--color-green-light);
+  color: var(--color-bg-white);
+}
+
+.btn-outline:focus-visible {
+  outline: 2px solid var(--color-green);
+  outline-offset: 2px;
+}
+
 /* .btn-pill: small rounded green pill (+ New Study, + Member). Works on <a> and <button> */
 .btn-pill {
   display: inline-flex;
