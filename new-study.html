@@ -23,7 +23,7 @@
       <div class="form-content">
         <a href="index.html" class="btn-outline">&larr; Back</a>
 
-        <h1>New Study</h1>
+        <h1 id="page-title">New Study</h1>
 
         <form id="study-form">
           <!-- 1. Project name -->
@@ -57,25 +57,7 @@
             <p>Write each task in the box and attach the link associated with the task.</p>
 
             <div id="task-list">
-              <!-- one block per task: js/new-study.js adds Task 2, Task 3... -->
-              <div class="task-block">
-                <label for="task-1">Task 1:</label>
-                <textarea
-                  id="task-1"
-                  name="task-1"
-                  class="field-box"
-                  placeholder="Write task here..."
-                ></textarea>
-
-                <label for="task-1-url">Attach URL link below:</label>
-                <input
-                  type="url"
-                  id="task-1-url"
-                  name="task-1-url"
-                  class="field-box"
-                  placeholder="URL link goes here..."
-                />
-              </div>
+              <!-- one block per task: js/new-study.js makes Task 1 (or the tasks of the study being edited), Task 2, Task 3... -->
             </div>
 
             <button type="button" id="add-task" class="btn-outline">+ Add task</button>
@@ -87,6 +69,7 @@
     </main>
 
     <script src="js/data/studies.js"></script>
+    <script src="js/data/study-store.js"></script>
     <script src="js/new-study.js"></script>
   </body>
 </html>

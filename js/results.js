@@ -8,10 +8,10 @@
 const COMMENTS_KEY_PREFIX = "uvu-eye-tracking:comments:"; // + study id
 
 const params = new URLSearchParams(window.location.search);
-let study = studies.find((item) => item.id === Number(params.get("study")));
+let study = getStudy(params.get("study"));
 // opened without ?study=: show the first study that has results, handy while building
 if (!study && !params.has("study")) {
-  study = studies.find((item) => item.status !== "draft" && item.participants.length > 0);
+  study = getStudies().find((item) => item.status !== "draft" && item.participants.length > 0);
 }
 
 const tabsScroller = document.getElementById("participant-scroller");
@@ -170,11 +170,11 @@ function startResults() {
   });
 
   prevTaskButton.addEventListener("click", () => {
-    taskIndex--;
+    taskIndex = Math.max(0, taskIndex - 1);
     render();
   });
   nextTaskButton.addEventListener("click", () => {
-    taskIndex++;
+    taskIndex = Math.min(study.tasks.length - 1, taskIndex + 1);
     render();
   });
 

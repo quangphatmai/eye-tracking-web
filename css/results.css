@@ -203,3 +203,10 @@
     gap: var(--space-6);
   }
 }
+
+/* .btn-outline / .btn-primary set display, which would beat the hidden attribute (Task 1 would still show "← Task 1") */
+.task-nav [hidden],
+#prev-task[hidden],
+#next-task[hidden] {
+  display: none;
+}

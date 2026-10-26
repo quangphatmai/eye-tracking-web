@@ -2,7 +2,7 @@
 // 1. Render one card per study from js/data/studies.js (done below, renderStudyCard)
 // 2. Filter tabs: show only studies matching the status (done below, uses js/tab-bar.js)
 // 3. Search icon: filter by name (later)
-// 4. Buttons: Results -> results.html (+ New Study is a link in index.html)
+// 4. Buttons: Results -> results.html, Edit -> new-study.html?study=ID (+ New Study is a link in index.html)
 // 5. Add Participant -> opens the popup (done below)
 
 const STATUS_LABELS = {
@@ -30,10 +30,16 @@ function renderStudyCard(study) {
     ? `<a href="results.html?study=${study.id}" class="results-btn">Results</a>`
     : `<button type="button" class="results-btn" disabled>Results</button>`;
 
+  // Thumbnail: a screenshot of the Task 1 website. No Task 1 url yet = icon placeholder.
+  // TODO: the screenshot itself (see study.thumbnail idea), for now every study with a url shows the sample image
+  const thumbnail = study.tasks[0]?.url
+    ? `<img src="assets/images/sample_image.png" alt="Study Thumbnail" class="thumbnail-image" />`
+    : `<div class="thumbnail-placeholder" role="img" aria-label="No preview yet"></div>`;
+
   card.innerHTML = `
     <div class="thumbnail-section">
       <span class="status-badge">${STATUS_LABELS[study.status]}</span>
-      <img src="assets/images/sample_image.png" alt="Study Thumbnail" class="thumbnail-image" />
+      ${thumbnail}
     </div>
 
     <div class="study-info">
@@ -45,7 +51,7 @@ function renderStudyCard(study) {
     </div>
     <div class="card-actions">
       <button class="delete-btn" aria-label="Delete Study">Delete</button>
-      <button class="edit-btn" aria-label="Edit Study">Edit</button>
+      <a href="new-study.html?study=${study.id}" class="edit-btn" aria-label="Edit Study">Edit</a>
     </div>
   `;
 
@@ -53,7 +59,7 @@ function renderStudyCard(study) {
 }
 
 const studyGrid = document.getElementById("study-grid");
-studies.forEach((study) => studyGrid.appendChild(renderStudyCard(study)));
+getStudies().forEach((study) => studyGrid.appendChild(renderStudyCard(study)));
 
 const addParticipantDialog = document.getElementById("add-participant-dialog");
 const addParticipantForm = document.getElementById("add-participant-form");
@@ -61,6 +67,8 @@ const addParticipantForm = document.getElementById("add-participant-form");
 // open the popup from any card's Add Participant button
 document.querySelectorAll(".add-participant-btn").forEach((button) => {
   button.addEventListener("click", () => {
+    // the popup has to know which study the new participant joins
+    addParticipantForm.dataset.studyId = button.closest(".study-card").dataset.studyId;
     addParticipantDialog.showModal(); // modal: dims the page, traps focus, Esc closes it
   });
 });

@@ -3,13 +3,19 @@
 // so the "Participants: N" on a card is always the number of participants the results page shows.
 //
 // Study shape:
-//   id, name, siteTested, status ("draft" | "in-progress" | "completed"), teamMembers: ["Dan"],
+//   id, createdAt (ms, the home page sorts newest first), name, siteTested, status ("draft" | "in-progress" | "completed"), teamMembers: ["Dan"],
 //   tasks: [{ text, url }]                       <- what New Study saves
 //   participants: [{ id, firstName, lastName, gender, age,
 //     results:  [{ heatmap, scanpath }],         <- one entry per task, video url or null (no videos yet)
 //     comments: ["comment for task 1", ...]      <- optional starting comments, one per task
 //   }]
 // Comments written on the results page are saved in localStorage by js/results.js and win over these.
+
+// the sample studies were "made" one per day before the first of these dates, so their order stays the same
+const sampleStart = new Date("2026-10-20T12:00:00").getTime();
+function daysAfterStart(days) {
+  return sampleStart + days * 24 * 60 * 60 * 1000;
+}
 
 const sampleTasks = [
   { text: "Find an item you like, and add it to your cart.", url: "https://www.booking.com" },
@@ -36,6 +42,7 @@ function makeParticipants(count, taskCount) {
 const studies = [
   {
     id: 1,
+    createdAt: daysAfterStart(-1),
     name: "Booking.com Search Flow",
     siteTested: "booking.com",
     status: "in-progress",
@@ -45,6 +52,7 @@ const studies = [
   },
   {
     id: 2,
+    createdAt: daysAfterStart(-2),
     name: "Course Registration",
     siteTested: "uvu.edu",
     status: "draft",
@@ -54,6 +62,7 @@ const studies = [
   },
   {
     id: 3,
+    createdAt: daysAfterStart(-3),
     name: "Campus Map Navigation",
     siteTested: "uvu.edu/map",
     status: "draft",
@@ -63,6 +72,7 @@ const studies = [
   },
   {
     id: 4,
+    createdAt: daysAfterStart(-4),
     name: "Library Search",
     siteTested: "library.uvu.edu",
     status: "in-progress",
@@ -72,6 +82,7 @@ const studies = [
   },
   {
     id: 5,
+    createdAt: daysAfterStart(-5),
     name: "Flight Booking",
     siteTested: "booking.com/flights",
     status: "completed",
@@ -81,6 +92,7 @@ const studies = [
   },
   {
     id: 6,
+    createdAt: daysAfterStart(-6),
     name: "Student Portal Login",
     siteTested: "my.uvu.edu",
     status: "completed",
