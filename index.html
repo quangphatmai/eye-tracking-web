@@ -17,10 +17,11 @@
   <body>
     <!-- HEADER: logo, "UVU EYE TRACKING TESTS AND RESULTS" -->
     <header>
-      <div class="logo-and-sitename">
+      <!-- logo + site name: a link to the home page on every page -->
+      <a href="index.html" class="logo-and-sitename">
         <img src="assets/images/uvu-mono.svg" alt="UVU Logo" class="logo" />
         <h1>EYE TRACKING TESTS AND RESULTS</h1>
-      </div>
+      </a>
     </header>
 
     <main>
@@ -113,6 +114,19 @@
               <button type="submit" class="btn-primary next-btn">Next</button>
             </div>
           </form>
+        </div>
+      </section>
+    </dialog>
+
+    <!-- Delete confirmation: opened by the Delete link on a card (js/home.js fills in the study name) -->
+    <dialog id="delete-study-dialog" class="modal" aria-labelledby="delete-study-title">
+      <section id="delete-study-panel">
+        <button type="button" class="modal-close" aria-label="Close">&times;</button>
+        <h2 id="delete-study-title">Delete study?</h2>
+        <p id="delete-study-message"></p>
+        <div class="delete-actions">
+          <button type="button" id="delete-cancel" class="btn-outline">Cancel</button>
+          <button type="button" id="delete-confirm" class="btn-primary">Delete</button>
         </div>
       </section>
     </dialog>

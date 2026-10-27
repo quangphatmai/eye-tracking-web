@@ -9,6 +9,8 @@
 //     results:  [{ heatmap, scanpath }],         <- one entry per task, video url or null (no videos yet)
 //     comments: ["comment for task 1", ...]      <- optional starting comments, one per task
 //   }]
+// Rules to keep the samples consistent with the app: a draft has no participants (the first Take Study turns it into
+// in-progress), and in-progress / completed studies have at least one participant.
 // Comments written on the results page are saved in localStorage by js/results.js and win over these.
 
 // the sample studies were "made" one per day before the first of these dates, so their order stays the same
@@ -78,7 +80,7 @@ const studies = [
     status: "in-progress",
     teamMembers: ["Rachel"],
     tasks: sampleTasks.slice(0, 2),
-    participants: [], // in progress but nobody has taken it yet: Results stays disabled
+    participants: makeParticipants(3, 2),
   },
   {
     id: 5,

@@ -176,6 +176,13 @@ header .logo-and-sitename {
   display: flex;
   align-items: center;
   gap: var(--space-8);
+  text-decoration: none; /* it is a link now, but it should look like before */
+  color: inherit;
+}
+
+header .logo-and-sitename:focus-visible {
+  outline: 2px solid var(--color-green);
+  outline-offset: 4px;
 }
 /* Modal popup: <dialog class="modal">, opened with dialog.showModal() */
 .modal {

@@ -5,6 +5,7 @@
 // Load order in the html: studies.js first, then this file.
 
 const STUDIES_KEY = "uvu-eye-tracking:studies";
+const DELETED_KEY = "uvu-eye-tracking:deleted-ids"; // ids of deleted studies (the sample studies live in studies.js, so they are hidden, not removed)
 const PENDING_PARTICIPANT_KEY = "uvu-eye-tracking:pending-participant";
 
 function readSavedStudies() {
@@ -23,6 +24,14 @@ function writeSavedStudies(savedStudies) {
   }
 }
 
+function readDeletedIds() {
+  try {
+    return JSON.parse(localStorage.getItem(DELETED_KEY)) ?? [];
+  } catch (error) {
+    return [];
+  }
+}
+
 // every study, newest first (the home page default order)
 function getStudies() {
   const saved = readSavedStudies();
@@ -33,7 +42,8 @@ function getStudies() {
     if (!studies.some((sample) => sample.id === study.id)) all.push(study); // studies made on the New Study page
   });
 
-  return all.sort((a, b) => b.createdAt - a.createdAt);
+  const deleted = readDeletedIds();
+  return all.filter((study) => !deleted.includes(study.id)).sort((a, b) => b.createdAt - a.createdAt);
 }
 
 function getStudy(id) {
@@ -41,7 +51,8 @@ function getStudy(id) {
 }
 
 function nextStudyId() {
-  return Math.max(0, ...getStudies().map((study) => study.id)) + 1;
+  // deleted ids count too, so a new study never gets the id of a deleted one (it would stay hidden)
+  return Math.max(0, ...getStudies().map((study) => study.id), ...readDeletedIds()) + 1;
 }
 
 // insert a new study, or replace the one with the same id
@@ -49,6 +60,16 @@ function saveStudy(study) {
   const saved = readSavedStudies().filter((item) => item.id !== study.id);
   saved.push(study);
   writeSavedStudies(saved);
+}
+
+// delete a study for good: the saved copy goes away and its id is remembered so a sample study stays hidden
+function deleteStudy(id) {
+  writeSavedStudies(readSavedStudies().filter((study) => study.id !== id));
+  try {
+    localStorage.setItem(DELETED_KEY, JSON.stringify([...readDeletedIds(), id]));
+  } catch (error) {
+    console.warn("Could not delete the study", error);
+  }
 }
 
 // ---------- Participant on his way from the Add Participant popup to the consent page ----------

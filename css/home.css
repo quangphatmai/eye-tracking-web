@@ -276,3 +276,43 @@
   background: var(--color-field);
   color: var(--color-text-muted);
 }
+
+/* Delete confirmation popup: same white panel as the Add Participant popup, just narrower */
+
+#delete-study-dialog {
+  max-width: 480px;
+}
+
+#delete-study-panel {
+  position: relative; /* the X button is placed against the panel */
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-10) var(--space-8) var(--space-8);
+  background: var(--color-bg-white);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card);
+}
+
+#delete-study-panel h2 {
+  margin: 0;
+  padding-right: var(--space-10); /* keeps the title away from the X button */
+  color: var(--color-text);
+  font-family: var(--font-heading);
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+#delete-study-panel p {
+  margin: 0;
+  color: var(--color-text);
+}
+
+.delete-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-4);
+  margin-top: var(--space-5);
+}
