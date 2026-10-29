@@ -1,3 +1,50 @@
+/* Fonts */
+/* Rajdhani (headings): the files are in assets/fonts/rajdhani, loaded below.
+   Lato (body): no files in the project yet, loaded from Google Fonts (needs internet).
+   TODO: download Lato into assets/fonts/lato and use @font-face like Rajdhani to work offline and avoid the extra request.
+   Lato has 400 and 700 there, so weight 600 text shows the 700. */
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap"); /* @import must stay at the top of the file */
+
+@font-face {
+  font-family: "Rajdhani";
+  src: url("../assets/fonts/rajdhani/Rajdhani-Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap; /* show the fallback font first, swap when the file has loaded */
+}
+
+@font-face {
+  font-family: "Rajdhani";
+  src: url("../assets/fonts/rajdhani/Rajdhani-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap; /* show the fallback font first, swap when the file has loaded */
+}
+
+@font-face {
+  font-family: "Rajdhani";
+  src: url("../assets/fonts/rajdhani/Rajdhani-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap; /* show the fallback font first, swap when the file has loaded */
+}
+
+@font-face {
+  font-family: "Rajdhani";
+  src: url("../assets/fonts/rajdhani/Rajdhani-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap; /* show the fallback font first, swap when the file has loaded */
+}
+
+@font-face {
+  font-family: "Rajdhani";
+  src: url("../assets/fonts/rajdhani/Rajdhani-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap; /* show the fallback font first, swap when the file has loaded */
+}
+
 /* Reset + page defaults */
 /* TODO: box-sizing, margin reset, body font/background */
 

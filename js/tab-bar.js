@@ -38,10 +38,22 @@ function initTabBar(tabBar, onChange) {
 // Scrollable version: the tabs scroll sideways and ‹ › buttons appear only when they do not all fit.
 // Markup: <div class="tab-bar-scroll"> <button class="tab-bar-arrow tab-bar-arrow--prev">
 //         <nav class="tab-bar">...</nav> <button class="tab-bar-arrow tab-bar-arrow--next"> </div>
+const TABS_PER_PAGE = 4;
+
 function initTabBarScroll(scroller) {
   const tabBar = scroller.querySelector(".tab-bar");
   const prevButton = scroller.querySelector(".tab-bar-arrow--prev");
   const nextButton = scroller.querySelector(".tab-bar-arrow--next");
+
+  // All tabs get the width of the widest one (its text + padding), the bar is TABS_PER_PAGE tabs wide.
+  // Done in JS because the widest label ("Participant 10") is only known once the tabs exist.
+  function sizeTabs() {
+    const tabs = Array.from(tabBar.querySelectorAll(".tab-bar-item"));
+    scroller.style.removeProperty("--tab-width"); // measure the natural widths
+    const widest = Math.max(0, ...tabs.map((tab) => tab.offsetWidth));
+    scroller.style.setProperty("--tab-width", `${widest}px`);
+    scroller.style.setProperty("--tab-count", Math.min(TABS_PER_PAGE, tabs.length));
+  }
 
   function update() {
     const overflows = tabBar.scrollWidth > tabBar.clientWidth + 1;
@@ -51,13 +63,15 @@ function initTabBarScroll(scroller) {
   }
 
   prevButton.addEventListener("click", () => {
-    tabBar.scrollBy({ left: -tabBar.clientWidth * 0.75, behavior: "smooth" });
+    tabBar.scrollBy({ left: -tabBar.clientWidth, behavior: "smooth" }); // one page back
   });
   nextButton.addEventListener("click", () => {
-    tabBar.scrollBy({ left: tabBar.clientWidth * 0.75, behavior: "smooth" });
+    tabBar.scrollBy({ left: tabBar.clientWidth, behavior: "smooth" }); // one page forward
   });
 
   tabBar.addEventListener("scroll", update);
   window.addEventListener("resize", update);
+  sizeTabs();
   update();
+  document.fonts?.ready.then(() => { sizeTabs(); update(); }); // fonts change the text width
 }

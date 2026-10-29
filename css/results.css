@@ -18,10 +18,10 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  gap: var(--space-4);
+  gap: var(--space-8);
 }
 
-/* the tabs take the space next to the heading and scroll when there are too many */
+/* the 4 tabs (+ arrows) are as wide as they need to be, space-between pushes them to the right edge */
 .results-toolbar .tab-bar-scroll {
   flex: 0 1 auto;
 }

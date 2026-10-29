@@ -111,14 +111,14 @@
 }
 
 .tab-bar-item {
-  padding: var(--space-8) var(--space-12);
+  padding: var(--space-4) var(--space-8);
   background: var(--color-bg-page);
   border: 1px solid transparent;
   border-top: 4px solid transparent; /* every tab has the same top/bottom lines so heights match */
   border-bottom: 1px solid var(--color-green);
   color: var(--color-text-secondary);
   font-family: var(--font-heading);
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   line-height: 1;
   text-transform: uppercase;
@@ -225,8 +225,10 @@ header .logo-and-sitename:focus-visible {
   outline-offset: 2px;
 }
 
-/* Scrollable tab bar: for tabs that can be many (participants). The tabs scroll sideways and the
-   ‹ › buttons only show when they do not all fit. Behavior: initTabBarScroll() in js/tab-bar.js */
+/* Scrollable tab bar: for tabs that can be many (participants). 4 tabs show at a time and the ‹ › buttons
+   move to the next / previous 4. They only show when there are more than 4.
+   All tabs get the width of the widest one, and the bar is as wide as 4 tabs (or fewer if there are fewer).
+   js/tab-bar.js (initTabBarScroll) measures the widest tab and sets --tab-width and --tab-count. */
 .tab-bar-scroll {
   display: flex;
   min-width: 0; /* lets the bar shrink below the width of all its tabs */
@@ -234,8 +236,10 @@ header .logo-and-sitename:focus-visible {
 
 .tab-bar-scroll .tab-bar {
   position: relative; /* tab.offsetLeft is measured from here */
+  flex: 0 1 calc(var(--tab-width) * var(--tab-count)); /* exactly 4 tabs wide; may shrink on a narrow screen */
   min-width: 0;
   overflow-x: auto;
+  scroll-snap-type: x mandatory; /* every move stops exactly on a tab, so a page is always 4 whole tabs */
   scrollbar-width: none; /* the arrows replace the scrollbar */
 }
 
@@ -244,8 +248,11 @@ header .logo-and-sitename:focus-visible {
 }
 
 .tab-bar-scroll .tab-bar-item {
-  flex: none;
-  padding: var(--space-8);
+  flex: 0 0 var(--tab-width, auto); /* before js measures: just the width of its own text */
+  padding: var(--space-4) var(--space-8);
+  text-align: center;
+  white-space: nowrap;
+  scroll-snap-align: start;
 }
 
 .tab-bar-arrow {
