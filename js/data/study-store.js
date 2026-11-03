@@ -118,3 +118,43 @@ function addParticipantToStudy(studyId, info) {
   });
   return participant;
 }
+
+// A session ended: the raw recordings are saved on the lab computer, the videos are not made yet.
+// The participant gets  recording: { sessionId, taskCount, status: "recorded" }  (the helper finds the folder from sessionId).
+// Making the videos is heavy, so it happens later (Results page, "Process videos"), when nobody is being recorded.
+function saveParticipantRecording(studyId, participantId, sessionId, taskCount) {
+  updateParticipant(studyId, participantId, (participant) => ({
+    ...participant,
+    recording: { sessionId, taskCount, status: "recorded" },
+  }));
+}
+
+// The helper made the videos of one participant: [{ task, heatmap, scanpath }] (video url or null).
+// They become the participant's results, which the Results page shows, and the recording is "ready".
+function saveParticipantResults(studyId, participantId, videos) {
+  const study = getStudy(studyId);
+  if (!study) return;
+
+  updateParticipant(studyId, participantId, (participant) => {
+    const results = study.tasks.map((_, index) => {
+      const video = videos.find((item) => item.task === index);
+      return { heatmap: video?.heatmap ?? null, scanpath: video?.scanpath ?? null };
+    });
+    const recording = participant.recording ? { ...participant.recording, status: "ready" } : participant.recording;
+    return { ...participant, results, recording };
+  });
+}
+
+// the participants of a study whose videos still have to be made (they have a recording that is not "ready")
+function getParticipantsToProcess(study) {
+  return study.participants.filter((participant) => participant.recording && participant.recording.status !== "ready");
+}
+
+function updateParticipant(studyId, participantId, change) {
+  const study = getStudy(studyId);
+  if (!study) return;
+  saveStudy({
+    ...study,
+    participants: study.participants.map((participant) => (participant.id === participantId ? change(participant) : participant)),
+  });
+}

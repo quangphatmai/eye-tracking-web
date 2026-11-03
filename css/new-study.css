@@ -194,6 +194,95 @@
   margin-top: var(--space-4); /* space between the task box and the URL label */
 }
 
+/* Task duration: appears under the URL box once a URL is typed */
+
+.task-duration {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-4); /* same space as above the URL label */
+}
+
+.task-duration[hidden] {
+  display: none; /* display: flex above would beat the hidden attribute */
+}
+
+/* The drop-down (matches the Figma): grey box with a green triangle, the list opens under it */
+
+.duration-picker {
+  position: relative;
+  width: 192px;
+}
+
+.duration-button {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  width: 100%;
+  height: 44px;
+  padding: 0 var(--space-4);
+  background: var(--color-field);
+  border: none;
+  border-radius: var(--radius);
+  color: var(--color-green);
+  font-family: var(--font-heading);
+  font-size: 16px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+}
+
+.duration-button:hover {
+  background: var(--color-border);
+}
+
+.duration-button:focus-visible,
+.duration-list [role="option"]:focus-visible {
+  outline: 2px solid var(--color-green);
+  outline-offset: 2px;
+}
+
+.duration-arrow {
+  flex: none;
+}
+
+.duration-list {
+  position: absolute;
+  top: calc(100% + var(--space-1));
+  left: 0;
+  z-index: 10;
+  width: 100%;
+  margin: 0;
+  padding: var(--space-2) 0;
+  background: var(--color-field);
+  border-radius: var(--radius);
+  list-style: none;
+}
+
+.duration-list[hidden] {
+  display: none; /* nothing here sets display today, but keep it safe like the other hidden rules */
+}
+
+.duration-list [role="option"] {
+  display: flex;
+  align-items: center;
+  min-height: var(--space-8);
+  padding: 0 var(--space-4) 0 var(--space-12); /* the times line up with the text of the button */
+  color: var(--color-green);
+  font-family: var(--font-heading);
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.duration-list [role="option"]:hover {
+  background: var(--color-border);
+}
+
+.duration-list [role="option"][aria-selected="true"] {
+  font-weight: 700;
+}
+
 /* Save: the button style itself is .btn-primary in components.css */
 
 .save-btn {

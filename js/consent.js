@@ -1,7 +1,7 @@
 // Consent form
 // 1. Take Study stays disabled until all 6 initial boxes + name + signature are filled (TODO)
 // 2. Date: fill in today's date automatically (done below)
-// 3. Take Study: the person becomes a participant of the study (draft -> in progress), then go to the live session page (page not built yet, home for now)
+// 3. Take Study: the person becomes a participant of the study (draft -> in progress), then the session page starts (calibration, tasks)
 
 // Date: today's date in the user's local time zone.
 // Not toISOString(): that is UTC, so in the evening it can show tomorrow.
@@ -24,12 +24,15 @@ consentForm.addEventListener("submit", (event) => {
   }
 
   const pending = takePendingParticipant(); // set by the Add Participant popup
+  let nextPage = "index.html";
   if (pending?.studyId) {
-    addParticipantToStudy(pending.studyId, { ...pending, consentDate: dateInput.value });
+    const participant = addParticipantToStudy(pending.studyId, { ...pending, consentDate: dateInput.value });
+    if (participant) {
+      nextPage = `session.html?study=${pending.studyId}&participant=${participant.id}`;
+    }
   } else {
     console.warn("No participant waiting: open this page from Add Participant on a study card");
   }
 
-  // TODO: go to the live session page when it exists
-  window.location.href = "index.html";
+  window.location.href = nextPage;
 });

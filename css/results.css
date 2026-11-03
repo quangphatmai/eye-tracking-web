@@ -1,17 +1,28 @@
 /* Results */
 /* .results-toolbar: RESULTS heading + participant tabs (scrollable .tab-bar-scroll from components.css) */
 /* .results-viewer: slides side by side (heatmap, scanpath), scroll sideways */
-/* .results-details: task text + comments, side by side */
-/* .results-actions: Done (left), Edit Study + Task 2 → (right) */
+/* .results-content: flex row, .results-viewer-section (video, left) + .results-side (task, comments, task buttons, right) */
+/* .results-topbar: Back (left) + Complete (right) */
+/* .process-panel: "Process videos" and one row per recorded participant (only while there is something to process) */
 
-/* Page: same width as the home page grid */
+/* Page: same width as the home page grid. As tall as the screen under the header, so nothing scrolls */
 
 .results-page {
   display: flex;
   flex-direction: column;
-  gap: var(--space-8);
+  gap: var(--space-4);
   max-width: 80%;
-  margin: var(--space-8) auto var(--space-16) auto;
+  height: calc(100vh - 74px); /* 74px = header */
+  height: calc(100dvh - 74px);
+  margin: 0 auto;
+  padding: var(--space-6) 0;
+}
+
+/* Back (left) / Complete (right) */
+.results-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .results-toolbar {
@@ -42,25 +53,33 @@
   text-align: center;
 }
 
+/* Recordings on the left, task + comments on the right. min-height: 0 lets the row shrink to the screen */
+
 .results-content {
+  flex: 1 1 0;
   display: flex;
-  flex-direction: column;
-  gap: var(--space-8);
+  gap: var(--space-10);
+  min-height: 0;
 }
 
 /* Viewer */
 
 .results-viewer-section {
+  flex: 2 1 0; /* twice as wide as the right column */
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start; /* pushed to the left */
   gap: var(--space-3);
+  min-width: 0;
+  min-height: 0;
+  container-type: size; /* lets the viewer size itself from the room it has (cqw / cqh below) */
 }
 
 .results-viewer {
   display: flex;
-  width: 100%;
-  max-width: 800px;
+  /* as wide as the column allows, but never taller than the room left above the Heatmap / Scanpath buttons
+     (100cqh - space-12 for those buttons), the slides are 16:10 so height = width / 1.6 */
+  width: min(100cqw, calc((100cqh - var(--space-12)) * 1.6));
   overflow-x: auto;
   scroll-snap-type: x mandatory; /* a swipe lands exactly on a slide */
   scrollbar-width: none; /* the Heatmap / Scanpath buttons below show where you are */
@@ -73,7 +92,7 @@
 .result-slide {
   flex: none;
   width: 100%;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 16 / 10; /* the lab screen is 1920x1200 */
   background: var(--color-card-image);
   scroll-snap-align: start;
 }
@@ -141,12 +160,16 @@
   outline-offset: 2px;
 }
 
-/* Task text + comments */
+/* Right column: task text, comments, task buttons. Centered next to the video, scrolls by itself if the screen is very short */
 
-.results-details {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-10);
+.results-side {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: safe center;
+  gap: var(--space-6);
+  min-width: 280px;
+  overflow-y: auto;
 }
 
 .detail {
@@ -169,28 +192,22 @@
   text-transform: uppercase;
 }
 
-/* Buttons: the look comes from .btn-primary / .btn-outline in components.css */
+/* Task buttons: the look comes from .btn-primary / .btn-outline in components.css */
 
-.results-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--space-4);
-}
-
-.results-actions-right {
+.task-nav {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-4);
 }
 
-/* Narrow screens */
+/* Narrow screens: too small to fit everything, so the page is as tall as it needs to be and the columns stack */
 
 @media (max-width: 720px) {
   .results-page {
     max-width: none;
-    margin: var(--space-6) var(--space-4) var(--space-12);
+    height: auto;
+    margin: 0 var(--space-4);
+    padding: var(--space-6) 0 var(--space-12);
   }
 
   .results-toolbar {
@@ -198,15 +215,136 @@
     align-items: stretch;
   }
 
-  .results-details {
-    grid-template-columns: 1fr;
+  .results-content {
+    flex-direction: column;
     gap: var(--space-6);
+  }
+
+  /* in a column the desktop flex values would give these 0 height */
+  .results-viewer-section {
+    flex: none;
+    container-type: normal;
+  }
+
+  .results-viewer {
+    width: 100%;
+  }
+
+  .results-side {
+    flex: none;
+    min-width: 0;
+    overflow-y: visible;
   }
 }
 
+/* "Mark as complete" and "✓ Completed" get the same width, so the button does not jump when toggled */
+#done-btn {
+  min-width: 176px;
+}
+
 /* .btn-outline / .btn-primary set display, which would beat the hidden attribute (Task 1 would still show "← Task 1") */
-.task-nav [hidden],
+#done-btn[hidden],
 #prev-task[hidden],
 #next-task[hidden] {
   display: none;
+}
+
+/* Process videos: one row per recorded participant. It stays small, the list scrolls when there are many */
+
+.process-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--color-bg-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.process-panel[hidden] {
+  display: none;
+}
+
+.process-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.process-summary,
+.process-note {
+  margin: 0;
+}
+
+.process-summary {
+  font-weight: 700;
+}
+
+.process-note {
+  color: var(--color-red);
+}
+
+.process-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  max-height: 96px; /* about three rows, then it scrolls */
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.process-row {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr) 160px;
+  align-items: center;
+  gap: var(--space-4);
+  font-size: 14px;
+}
+
+.process-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.process-status {
+  color: var(--color-text-secondary);
+}
+
+.process-row[data-state="ready"] .process-status {
+  color: var(--color-status-completed);
+  font-weight: 700;
+}
+
+.process-row[data-state="processing"] .process-status {
+  color: var(--color-status-progress);
+  font-weight: 700;
+}
+
+.process-row[data-state="failed"] .process-status {
+  color: var(--color-red);
+  font-weight: 700;
+}
+
+/* the small bar, only there while the participant is processed (it keeps its room so the rows do not jump) */
+.process-bar {
+  height: var(--space-2);
+  background: var(--color-field);
+  border-radius: 999px;
+  overflow: hidden;
+  visibility: hidden;
+}
+
+.process-row[data-state="processing"] .process-bar {
+  visibility: visible;
+}
+
+.process-bar-fill {
+  width: 0;
+  height: 100%;
+  background: var(--color-status-progress);
+  transition: width 0.3s;
 }

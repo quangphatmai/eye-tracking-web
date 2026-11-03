@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Session | UVU Eye Tracking</title>
+    <link rel="stylesheet" href="css/variables.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/session.css" />
+  </head>
+  <body>
+    <!-- HEADER -->
+    <header>
+      <!-- logo + site name: a link to the home page on every page -->
+      <a href="index.html" class="logo-and-sitename">
+        <img src="assets/images/uvu-mono.svg" alt="UVU Logo" class="logo" />
+        <h1>EYE TRACKING TESTS AND RESULTS</h1>
+      </a>
+    </header>
+
+    <!-- The session of one participant: calibration, then the tasks one by one, then the videos are processed.
+         The page comes from the consent page: session.html?study=5&participant=2 (see js/session.js).
+         The Python helper (bridge_server.py) does the real work, this page only asks for it and shows what happens -->
+    <main class="session-page">
+      <div class="session-card">
+        <!-- Top row: Back on the left, connection to the Python helper on the right -->
+        <div class="session-top">
+          <a href="index.html" class="btn-outline">&larr; Back</a>
+          <div class="bridge-bar">
+            <p class="bridge-status" id="bridge-status" data-state="connecting" role="status">Connecting to the eye tracker helper...</p>
+            <button type="button" id="bridge-retry" class="btn-outline" hidden>Retry</button>
+          </div>
+        </div>
+
+        <p class="session-who" id="session-who"></p>
+
+        <!-- Shown instead of the stages when something is wrong (unknown study, a task without a URL, helper error) -->
+        <p class="session-message" id="session-message" role="alert" hidden></p>
+        <button type="button" id="retry-step" class="btn-primary retry-step" hidden>Try again</button>
+
+        <!-- 1. Calibration -->
+        <section class="session-stage" id="stage-calibration">
+          <h1>Calibration</h1>
+          <p>The participant looks at each point on the test screen until the last one is done.</p>
+
+          <div class="progress-block">
+            <p id="calibration-text">Not started</p>
+            <div class="progress-bar" id="calibration-bar" role="progressbar" aria-label="Calibration progress" aria-valuemin="0" aria-valuemax="9" aria-valuenow="0">
+              <div class="progress-fill" id="calibration-fill"></div>
+            </div>
+          </div>
+
+          <div class="session-actions">
+            <button type="button" id="start-calibration" class="btn-primary" disabled>Start calibration</button>
+            <button type="button" id="calibration-continue" class="btn-primary" hidden>Continue to tasks &rarr;</button>
+          </div>
+        </section>
+
+        <!-- 2. Familiarization: the participant explores the first website. Nothing is tracked or recorded -->
+        <section class="session-stage" id="stage-familiarize" hidden>
+          <h1>Getting familiar</h1>
+          <p id="familiarize-text">The participant explores the website of the first task. Nothing is tracked or recorded yet.</p>
+
+          <p class="task-timer" id="familiarize-timer">1:00</p>
+          <p class="task-hint" id="familiarize-hint">Starting...</p>
+
+          <div class="session-actions">
+            <button type="button" id="skip-familiarize" class="btn-outline" disabled>Skip</button>
+          </div>
+        </section>
+
+        <!-- 3. Tasks: one at a time. The participant presses Start Task and X on their own screen.
+             The timer counts down to the maximum time, the observer's button ends the task earlier -->
+        <section class="session-stage" id="stage-task" hidden>
+          <h1 id="task-heading">Task 1 of 1</h1>
+          <p id="task-text"></p>
+          <p class="task-url">Test page: <span id="task-url"></span></p>
+
+          <p class="task-timer" id="task-timer">1:00</p>
+          <p class="task-hint" id="task-hint">Maximum time for this task.</p>
+
+          <div class="session-actions">
+            <button type="button" id="finish-task" class="btn-outline" hidden>Next task</button>
+          </div>
+        </section>
+
+        <!-- 4. After the last task: the helper saves the recordings and closes the session.
+             The heatmap and scanpath videos are NOT made now (heavy work): "Process videos" on the Results page does it later -->
+        <section class="session-stage" id="stage-finish" hidden>
+          <h1 id="finish-heading">Saving the recordings...</h1>
+          <p id="finish-text">Keep this page open for a moment.</p>
+
+          <div class="session-actions">
+            <a href="index.html" id="go-home" class="btn-primary" hidden>Back to home</a>
+            <a href="results.html" id="view-results" class="btn-outline" hidden>Open results</a>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <script src="js/data/studies.js"></script>
+    <script src="js/data/study-store.js"></script>
+    <script src="js/bridge-client.js"></script>
+    <script src="js/session.js"></script>
+  </body>
+</html>

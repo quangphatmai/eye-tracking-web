@@ -4,7 +4,7 @@
 //
 // Study shape:
 //   id, createdAt (ms, the home page sorts newest first), name, siteTested, status ("draft" | "in-progress" | "completed"), teamMembers: ["Dan"],
-//   tasks: [{ text, url }]                       <- what New Study saves
+//   tasks: [{ text, url, duration }]             <- what New Study saves. duration = maximum time in seconds (30 to 180, default 60)
 //   participants: [{ id, firstName, lastName, gender, age,
 //     results:  [{ heatmap, scanpath }],         <- one entry per task, video url or null (no videos yet)
 //     comments: ["comment for task 1", ...]      <- optional starting comments, one per task
@@ -20,9 +20,9 @@ function daysAfterStart(days) {
 }
 
 const sampleTasks = [
-  { text: "Find an item you like, and add it to your cart.", url: "https://www.booking.com" },
-  { text: "Search for a stay in Salt Lake City for two adults next weekend.", url: "https://www.booking.com" },
-  { text: "Find the page where you can change an existing booking.", url: "https://www.booking.com" },
+  { text: "Find an item you like, and add it to your cart.", url: "https://www.booking.com", duration: 60 },
+  { text: "Search for a stay in Salt Lake City for two adults next weekend.", url: "https://www.booking.com", duration: 60 },
+  { text: "Find the page where you can change an existing booking.", url: "https://www.booking.com", duration: 60 },
 ];
 
 const sampleFirstNames = ["Ethan", "Maya", "Liam", "Sofia", "Noah", "Ava", "Lucas", "Mia", "Owen", "Zoe"];

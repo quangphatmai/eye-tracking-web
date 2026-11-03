@@ -21,6 +21,24 @@
 
     <!-- The study comes from the link: results.html?study=5 (see js/results.js) -->
     <main class="results-page">
+      <!-- Top row: Back (home) on the left, Mark as complete (toggle, updates the status on the home page) on the right -->
+      <div class="results-topbar">
+        <a href="index.html" class="btn-outline">&larr; Back</a>
+        <button type="button" id="done-btn" class="btn-primary" aria-pressed="false">Mark as complete</button>
+      </div>
+
+      <!-- Process videos: the heatmap and scanpath videos are made here, after the recordings (heavy work: do it when nobody
+           is being recorded). One row per participant with a recording. Only shown while there is something to process.
+           Made by js/results.js, talks to the helper (bridge_server.py) -->
+      <section class="process-panel" id="process-panel" aria-label="Process videos" hidden>
+        <div class="process-head">
+          <p class="process-summary" id="process-summary"></p>
+          <button type="button" id="process-btn" class="btn-primary">Process videos</button>
+        </div>
+        <ul class="process-list" id="process-list"></ul>
+        <p class="process-note" id="process-note" role="alert" hidden></p>
+      </section>
+
       <!-- Heading RESULTS + participant tabs. The tabs are made by js/results.js (one per participant)
            and scroll sideways with ‹ › buttons when there are too many -->
       <div class="results-toolbar">
@@ -35,6 +53,7 @@
       <!-- Shown instead of the content when there is nothing to show (draft, no participants, unknown study) -->
       <p class="results-message" id="results-message" hidden></p>
 
+      <!-- Everything below fits in one screen: the recordings on the left, task + comments on the right -->
       <div class="results-content" id="results-content">
         <!-- Viewer: slides sit side by side, scroll sideways to go from the heatmap to the scanpath.
              js/results.js puts a <video> in each slide, or a placeholder while there is no video -->
@@ -49,8 +68,9 @@
           </div>
         </section>
 
-        <!-- Task text (from New Study) + comments for this participant and this task -->
-        <div class="results-details">
+        <!-- Right column: task text (from New Study), comments for this participant and this task, task buttons.
+             Results is for viewing only: studies are edited from the home page -->
+        <div class="results-side">
           <div class="detail">
             <h2 class="detail-title" id="task-title">Task 1:</h2>
             <p id="task-text"></p>
@@ -63,12 +83,7 @@
               placeholder="Write comments here..."
             ></textarea>
           </div>
-        </div>
-
-        <!-- Done saves the comments and goes home. Results is for viewing only: studies are edited from the home page -->
-        <div class="results-actions">
-          <button type="button" id="done-btn" class="btn-primary">Done</button>
-          <div class="results-actions-right">
+          <div class="task-nav">
             <button type="button" id="prev-task" class="btn-outline" hidden>&larr; Task 1</button>
             <button type="button" id="next-task" class="btn-primary">Task 2 &rarr;</button>
           </div>
@@ -78,6 +93,7 @@
 
     <script src="js/data/studies.js"></script>
     <script src="js/data/study-store.js"></script>
+    <script src="js/bridge-client.js"></script>
     <script src="js/tab-bar.js"></script>
     <script src="js/results.js"></script>
   </body>
