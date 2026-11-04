@@ -47,7 +47,6 @@ const taskText = document.getElementById("task-text");
 const taskUrl = document.getElementById("task-url");
 const taskTimer = document.getElementById("task-timer");
 const taskHint = document.getElementById("task-hint");
-const finishTaskButton = document.getElementById("finish-task");
 
 const finishHeading = document.getElementById("finish-heading");
 const finishText = document.getElementById("finish-text");
@@ -208,7 +207,6 @@ function startTask(note) {
   taskUrl.textContent = task.url;
   taskTimer.textContent = formatTime(taskDuration(taskIndex));
   taskHint.textContent = note ?? "Showing the task on the participant's screen...";
-  finishTaskButton.hidden = true;
   bridge.send("start_task", { index: taskIndex, text: task.text, url: task.url, duration: taskDuration(taskIndex) });
 }
 
@@ -218,21 +216,13 @@ bridge.on("task_ready", () => {
 
 bridge.on("task_started", (message) => {
   startTimer(taskTimer, message.duration);
-  taskHint.textContent = "Recording. The task ends when the participant presses X, when the time is up, or when you press the button.";
-  finishTaskButton.textContent = taskIndex === study.tasks.length - 1 ? "Finish" : "Next task";
-  finishTaskButton.disabled = false;
-  finishTaskButton.hidden = false;
-});
-
-finishTaskButton.addEventListener("click", () => {
-  finishTaskButton.disabled = true; // wait for "task_finished"
-  bridge.send("finish_task");
+  taskHint.textContent = "Recording. The task ends when the participant closes the browser window or when the time is up.";
 });
 
 const FINISH_REASONS = {
   timeout: " (the time ran out)",
-  done: " (the participant pressed X)",
-  next: " (ended by the observer)",
+  done: " (the participant closed the browser window)",
+  next: " (stopped by the helper)",
 };
 
 bridge.on("task_finished", (message) => {
@@ -297,7 +287,6 @@ bridge.on("close", () => {
   sessionReady = false;
   startCalibrationButton.disabled = true;
   skipFamiliarizeButton.disabled = true;
-  finishTaskButton.disabled = true;
   retryStepButton.hidden = true;
 
   if (finished) {

@@ -1,7 +1,7 @@
 /* New Study form */
 /* .form-page: grey background, content column on the left */
 /* .field-box: grey input/textarea boxes (task, URL) */
-/* .task-block: "TASK 1:" label + textarea + "ATTACH URL LINK BELOW:" + URL box */
+/* .task-block: "TASK 1:" label + Remove + textarea + "ATTACH URL LINK BELOW:" + URL box */
 /* Same page structure as consent.css / add-participant.css: grey page, 64px top, 72px bottom */
 
 /* Page */
@@ -295,4 +295,81 @@
   .form-page {
     padding: var(--space-8) var(--space-4) var(--space-12);
   }
+}
+
+/* "TASK 2:" on the left, a small Remove on the right */
+
+.task-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.task-remove {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-right: calc(var(--space-2) * -1); /* the text lines up with the right edge of the boxes below */
+  padding: var(--space-1) var(--space-2);
+  background: none;
+  border: none;
+  border-radius: var(--radius);
+  color: var(--color-text-secondary);
+  font-family: var(--font-heading);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.task-remove:hover {
+  background: var(--color-field);
+  color: var(--color-red);
+}
+
+.task-remove:focus-visible {
+  outline: 2px solid var(--color-green);
+  outline-offset: 2px;
+}
+
+/* Remove task confirmation popup: the same white panel as the delete popup on the home page (home.css) */
+
+#remove-task-dialog {
+  max-width: 480px;
+}
+
+#remove-task-panel {
+  position: relative; /* the X button is placed against the panel */
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-10) var(--space-8) var(--space-8);
+  background: var(--color-bg-white);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card);
+}
+
+#remove-task-panel h2 {
+  margin: 0;
+  padding-right: var(--space-10); /* keeps the title away from the X button */
+  color: var(--color-text);
+  font-family: var(--font-heading);
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+#remove-task-panel p {
+  margin: 0;
+  color: var(--color-text);
+}
+
+.confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-4);
+  margin-top: var(--space-5);
 }

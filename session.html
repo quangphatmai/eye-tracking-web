@@ -71,7 +71,7 @@
         </section>
 
         <!-- 3. Tasks: one at a time. The participant presses Start Task and X on their own screen.
-             The timer counts down to the maximum time, the observer's button ends the task earlier -->
+             The timer counts down to the maximum time; the participant ends the task earlier by closing the browser window -->
         <section class="session-stage" id="stage-task" hidden>
           <h1 id="task-heading">Task 1 of 1</h1>
           <p id="task-text"></p>
@@ -79,10 +79,6 @@
 
           <p class="task-timer" id="task-timer">1:00</p>
           <p class="task-hint" id="task-hint">Maximum time for this task.</p>
-
-          <div class="session-actions">
-            <button type="button" id="finish-task" class="btn-outline" hidden>Next task</button>
-          </div>
         </section>
 
         <!-- 4. After the last task: the helper saves the recordings and closes the session.

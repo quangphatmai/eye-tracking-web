@@ -4,6 +4,7 @@
 // 3. Save: only the project name is required. A new study is a draft and goes to the top of the home page;
 //    when opened as new-study.html?study=ID (Edit on a card) the form is filled in and Save updates that study  (done)
 // 4. Back: return to index.html  (it is a normal link in new-study.html)
+// 1b. "Remove" on a task block asks "Remove Task N?" in a popup, then takes that task away; the tasks after it are renumbered  (done)
 // 5. Task duration: after a URL is typed, a drop-down appears for the maximum time of that task
 //    (30 s steps, 30 s to 3 min, default 1 min). Saved in seconds as task.duration
 //    The drop-down is a button + list made here (to match the Figma). A hidden <select> keeps the value
@@ -181,28 +182,82 @@ document.addEventListener("click", (event) => {
   });
 });
 
+// The visible numbers ("Task 1:", "Task 2:"...) always follow the order of the blocks, so they are set again whenever a task
+// is added or removed
+function updateTaskNumbers() {
+  taskList.querySelectorAll(".task-block").forEach((block, index) => {
+    block.querySelector(".task-title").textContent = `Task ${index + 1}:`;
+    block.querySelector(".task-remove").setAttribute("aria-label", `Remove Task ${index + 1}`);
+  });
+}
+
+// Remove: the button only asks, the popup's Remove button does it
+const removeTaskDialog = document.getElementById("remove-task-dialog");
+const removeTaskTitle = document.getElementById("remove-task-title");
+const removeTaskMessage = document.getElementById("remove-task-message");
+let taskToRemove = null; // the block waiting for the answer
+
+function askToRemoveTask(block) {
+  const number = Array.from(taskList.querySelectorAll(".task-block")).indexOf(block) + 1;
+  taskToRemove = block;
+  removeTaskTitle.textContent = `Remove Task ${number}?`;
+  removeTaskMessage.textContent = `Task ${number} and its link will be removed from this study. This cannot be undone.`;
+  removeTaskDialog.showModal();
+}
+
+document.getElementById("remove-task-confirm").addEventListener("click", () => {
+  const block = taskToRemove;
+  taskToRemove = null;
+  removeTaskDialog.close();
+  if (!block) return;
+
+  // the focus goes to the task above (or the one below), and to "+ Add task" when no task is left
+  const neighbour = block.previousElementSibling ?? block.nextElementSibling;
+  block.remove();
+  updateTaskNumbers();
+  (neighbour?.querySelector("textarea") ?? document.getElementById("add-task")).focus();
+});
+
+document.getElementById("remove-task-cancel").addEventListener("click", () => removeTaskDialog.close());
+removeTaskDialog.querySelector(".modal-close").addEventListener("click", () => removeTaskDialog.close());
+removeTaskDialog.addEventListener("click", (event) => {
+  if (event.target === removeTaskDialog) removeTaskDialog.close(); // a click on the dark area outside the panel
+});
+removeTaskDialog.addEventListener("close", () => {
+  taskToRemove = null;
+});
+
+// ids need to stay unique (labels point to them), so they come from a counter and not from the visible number
+let taskIdCounter = 0;
+
 // A task block: label + textarea, label + url, duration (shown once there is a url). `task` fills the boxes (edit mode)
 function addTaskBlock(task = { text: "", url: "", duration: DEFAULT_DURATION }) {
-  const number = taskList.querySelectorAll(".task-block").length + 1;
+  const uid = ++taskIdCounter;
 
   const block = document.createElement("div");
   block.className = "task-block";
   block.innerHTML = `
-    <label for="task-${number}">Task ${number}:</label>
-    <textarea id="task-${number}" name="task-${number}" class="field-box" placeholder="Write task here..."></textarea>
-    <label for="task-${number}-url">Attach URL link below:</label>
-    <input type="url" id="task-${number}-url" name="task-${number}-url" class="field-box" placeholder="URL link goes here..." />
+    <div class="task-head">
+      <label for="task-${uid}" class="task-title"></label>
+      <button type="button" class="task-remove">
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
+        Remove
+      </button>
+    </div>
+    <textarea id="task-${uid}" name="task-${uid}" class="field-box" placeholder="Write task here..."></textarea>
+    <label for="task-${uid}-url">Attach URL link below:</label>
+    <input type="url" id="task-${uid}-url" name="task-${uid}-url" class="field-box" placeholder="URL link goes here..." />
     <div class="task-duration" hidden>
-      <label for="task-${number}-duration-button" id="task-${number}-duration-label">Task duration (maximum time):</label>
+      <label for="task-${uid}-duration-button" id="task-${uid}-duration-label">Task duration (maximum time):</label>
       <div class="duration-picker">
-        <select id="task-${number}-duration" name="task-${number}-duration" hidden>
+        <select id="task-${uid}-duration" name="task-${uid}-duration" hidden>
           ${durationOptions.map((seconds) => `<option value="${seconds}">${formatDuration(seconds)}</option>`).join("")}
         </select>
-        <button type="button" id="task-${number}-duration-button" class="duration-button" aria-haspopup="listbox" aria-expanded="false">
+        <button type="button" id="task-${uid}-duration-button" class="duration-button" aria-haspopup="listbox" aria-expanded="false">
           <svg class="duration-arrow" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 5h10L8 12z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" /></svg>
           <span class="duration-value"></span>
         </button>
-        <ul class="duration-list" role="listbox" aria-labelledby="task-${number}-duration-label" hidden>
+        <ul class="duration-list" role="listbox" aria-labelledby="task-${uid}-duration-label" hidden>
           ${durationOptions.map((seconds) => `<li role="option" tabindex="-1" data-value="${seconds}">${formatDuration(seconds)}</li>`).join("")}
         </ul>
       </div>
@@ -225,7 +280,10 @@ function addTaskBlock(task = { text: "", url: "", duration: DEFAULT_DURATION }) 
   urlInput.addEventListener("input", updateDurationVisibility);
   updateDurationVisibility();
 
+  block.querySelector(".task-remove").addEventListener("click", () => askToRemoveTask(block));
+
   taskList.appendChild(block);
+  updateTaskNumbers();
   return block;
 }
 

@@ -69,6 +69,20 @@
       </div>
     </main>
 
+    <!-- Remove task confirmation: opened by the Remove button of a task (js/new-study.js fills in the task number).
+         Same look as the delete popup on the home page -->
+    <dialog id="remove-task-dialog" class="modal" aria-labelledby="remove-task-title">
+      <section id="remove-task-panel">
+        <button type="button" class="modal-close" aria-label="Close">&times;</button>
+        <h2 id="remove-task-title">Remove task?</h2>
+        <p id="remove-task-message"></p>
+        <div class="confirm-actions">
+          <button type="button" id="remove-task-cancel" class="btn-outline">Cancel</button>
+          <button type="button" id="remove-task-confirm" class="btn-primary">Remove</button>
+        </div>
+      </section>
+    </dialog>
+
     <script src="js/data/studies.js"></script>
     <script src="js/data/study-store.js"></script>
     <script src="js/new-study.js"></script>
