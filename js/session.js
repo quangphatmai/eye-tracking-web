@@ -9,6 +9,8 @@
 //    the observer's button ends the task earlier. The helper decides when a task really ends and tells us ("task_finished")
 // 6. After the last task: the helper saves the recordings and closes the session. The videos (heatmap, scanpath) are made
 //    later from the Results page ("Process videos"), when nobody is being recorded: it is heavy work
+// 7. While the participant explores the website and does tasks, the helper shows their head on the observer's second screen
+//    (a small Titta window, same picture as in the calibration)
 // If the helper is not running the page says so, and Retry tries again.
 
 const params = new URLSearchParams(window.location.search);
@@ -119,7 +121,9 @@ startCalibrationButton.addEventListener("click", () => {
   hideMessage();
   startCalibrationButton.disabled = true; // no second click while it runs
   calibrationContinueButton.hidden = true;
-  calibrationText.textContent = "Calibrating on the participant's screen. Follow the instructions shown there."; // the real calibration sends no progress
+  // the real calibration sends no progress
+  calibrationText.textContent =
+    "Calibrating. The participant puts their head in the circle, presses Space and follows the dots. When it is done the results appear on your second screen: check them and press Accept there.";
   bridge.send("start_calibration");
 });
 
