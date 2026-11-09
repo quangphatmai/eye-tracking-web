@@ -23,7 +23,7 @@
          The page comes from the consent page: session.html?study=5&participant=2 (see js/session.js).
          The Python helper (bridge_server.py) does the real work, this page only asks for it and shows what happens -->
     <main class="session-page">
-      <div class="session-card">
+      <div class="session-card" id="session-card">
         <!-- Top row: Back on the left, connection to the Python helper on the right -->
         <div class="session-top">
           <a href="index.html" class="btn-outline">&larr; Back</a>
@@ -79,6 +79,41 @@
 
           <p class="task-timer" id="task-timer">1:00</p>
           <p class="task-hint" id="task-hint">Maximum time for this task.</p>
+        </section>
+
+        <!-- 3b. After each task: look at the videos with the participant (retrospective think-aloud).
+             The helper makes the heatmap and scanpath videos right after the task; the observer writes the comments here.
+             The comments are the same ones as on the Results page -->
+        <section class="session-stage" id="stage-review" hidden>
+          <h1 id="review-heading">Task 1: review</h1>
+          <p id="review-task-text"></p>
+          <p class="task-hint" id="review-reason"></p>
+
+          <div class="review-layout">
+            <div class="review-viewer">
+              <div class="review-switch" id="review-switch">
+                <button type="button" class="review-switch-item is-active" data-kind="heatmap" aria-pressed="true">Heatmap</button>
+                <button type="button" class="review-switch-item" data-kind="scanpath" aria-pressed="false">Scanpath</button>
+              </div>
+              <div class="review-screen" id="review-screen"></div>
+              <div class="progress-block" id="review-progress-block">
+                <p id="review-progress-text">Making the videos...</p>
+                <div class="progress-bar" id="review-bar" role="progressbar" aria-label="Video progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                  <div class="progress-fill" id="review-fill"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="review-side">
+              <label for="review-comments" class="review-label">Comments:</label>
+              <textarea id="review-comments" class="field-box" placeholder="Write comments here..."></textarea>
+              <button type="button" id="review-stamp" class="btn-outline" disabled>Insert video time</button>
+            </div>
+          </div>
+
+          <div class="session-actions">
+            <button type="button" id="review-next" class="btn-primary">Next task &rarr;</button>
+          </div>
         </section>
 
         <!-- 4. After the last task: the helper saves the recordings and closes the session.

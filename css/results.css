@@ -3,7 +3,6 @@
 /* .results-viewer: slides side by side (heatmap, scanpath), scroll sideways */
 /* .results-content: flex row, .results-viewer-section (video, left) + .results-side (task, comments, task buttons, right) */
 /* .results-topbar: Back (left) + Complete (right) */
-/* .process-panel: "Process videos" and one row per recorded participant (only while there is something to process) */
 
 /* Page: same width as the home page grid. As tall as the screen under the header, so nothing scrolls */
 
@@ -192,6 +191,11 @@
   text-transform: uppercase;
 }
 
+/* "Insert video time" under the comments: a small button, not stretched over the column */
+.stamp-btn {
+  align-self: flex-start;
+}
+
 /* Task buttons: the look comes from .btn-primary / .btn-outline in components.css */
 
 .task-nav {
@@ -249,102 +253,3 @@
   display: none;
 }
 
-/* Process videos: one row per recorded participant. It stays small, the list scrolls when there are many */
-
-.process-panel {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  padding: var(--space-4);
-  background: var(--color-bg-white);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-}
-
-.process-panel[hidden] {
-  display: none;
-}
-
-.process-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: var(--space-4);
-}
-
-.process-summary,
-.process-note {
-  margin: 0;
-}
-
-.process-summary {
-  font-weight: 700;
-}
-
-.process-note {
-  color: var(--color-red);
-}
-
-.process-list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  max-height: 96px; /* about three rows, then it scrolls */
-  margin: 0;
-  padding: 0;
-  overflow-y: auto;
-  list-style: none;
-}
-
-.process-row {
-  display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr) 160px;
-  align-items: center;
-  gap: var(--space-4);
-  font-size: 14px;
-}
-
-.process-name {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.process-status {
-  color: var(--color-text-secondary);
-}
-
-.process-row[data-state="ready"] .process-status {
-  color: var(--color-status-completed);
-  font-weight: 700;
-}
-
-.process-row[data-state="processing"] .process-status {
-  color: var(--color-status-progress);
-  font-weight: 700;
-}
-
-.process-row[data-state="failed"] .process-status {
-  color: var(--color-red);
-  font-weight: 700;
-}
-
-/* the small bar, only there while the participant is processed (it keeps its room so the rows do not jump) */
-.process-bar {
-  height: var(--space-2);
-  background: var(--color-field);
-  border-radius: 999px;
-  overflow: hidden;
-  visibility: hidden;
-}
-
-.process-row[data-state="processing"] .process-bar {
-  visibility: visible;
-}
-
-.process-bar-fill {
-  width: 0;
-  height: 100%;
-  background: var(--color-status-progress);
-  transition: width 0.3s;
-}

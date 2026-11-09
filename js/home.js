@@ -22,6 +22,17 @@ function escapeHtml(text) {
   return span.innerHTML;
 }
 
+// The picture of the card: a screenshot of the Task 1 website (taken by the helper, see js/thumbnails.js).
+// Not taken yet = the name of the site on a grey box. No Task 1 URL yet (a draft) = the empty grey box.
+function thumbnailMarkup(study) {
+  const image = getThumbnail(study);
+  if (image) return `<img src="${image}" alt="Preview of ${escapeHtml(study.siteTested)}" class="thumbnail-image" />`;
+  if (study.tasks[0]?.url) {
+    return `<div class="thumbnail-placeholder thumbnail-pending" role="img" aria-label="Preview not ready yet"><span>${escapeHtml(study.siteTested)}</span></div>`;
+  }
+  return `<div class="thumbnail-placeholder" role="img" aria-label="No preview yet"></div>`;
+}
+
 function renderStudyCard(study) {
   const card = document.createElement("div");
   card.className = `study-card study-card--${study.status}`;
@@ -34,16 +45,10 @@ function renderStudyCard(study) {
     ? `<a href="results.html?study=${study.id}" class="results-btn">Results</a>`
     : `<button type="button" class="results-btn" disabled>Results</button>`;
 
-  // Thumbnail: a screenshot of the Task 1 website. No Task 1 url yet = icon placeholder.
-  // TODO: the screenshot itself (see study.thumbnail idea), for now every study with a url shows the sample image
-  const thumbnail = study.tasks[0]?.url
-    ? `<img src="assets/images/sample_image.png" alt="Study Thumbnail" class="thumbnail-image" />`
-    : `<div class="thumbnail-placeholder" role="img" aria-label="No preview yet"></div>`;
-
   card.innerHTML = `
     <div class="thumbnail-section">
       <span class="status-badge">${STATUS_LABELS[study.status]}</span>
-      ${thumbnail}
+      ${thumbnailMarkup(study)}
     </div>
 
     <div class="study-info">
@@ -82,6 +87,16 @@ function renderStudies() {
 }
 
 renderStudies();
+
+// the helper took a picture: change the picture of that card only (the cards are not drawn again)
+function showNewThumbnail(studyId) {
+  const study = getStudy(studyId);
+  const section = studyGrid.querySelector(`.study-card[data-study-id="${studyId}"] .thumbnail-section`);
+  if (!study || !section) return;
+  section.querySelector(".thumbnail-image, .thumbnail-placeholder")?.remove();
+  section.insertAdjacentHTML("beforeend", thumbnailMarkup(study));
+}
+startThumbnails(showNewThumbnail);
 
 const addParticipantDialog = document.getElementById("add-participant-dialog");
 const addParticipantForm = document.getElementById("add-participant-form");

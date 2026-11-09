@@ -27,18 +27,6 @@
         <button type="button" id="done-btn" class="btn-primary" aria-pressed="false">Mark as complete</button>
       </div>
 
-      <!-- Process videos: the heatmap and scanpath videos are made here, after the recordings (heavy work: do it when nobody
-           is being recorded). One row per participant with a recording. Only shown while there is something to process.
-           Made by js/results.js, talks to the helper (bridge_server.py) -->
-      <section class="process-panel" id="process-panel" aria-label="Process videos" hidden>
-        <div class="process-head">
-          <p class="process-summary" id="process-summary"></p>
-          <button type="button" id="process-btn" class="btn-primary">Process videos</button>
-        </div>
-        <ul class="process-list" id="process-list"></ul>
-        <p class="process-note" id="process-note" role="alert" hidden></p>
-      </section>
-
       <!-- Heading RESULTS + participant tabs. The tabs are made by js/results.js (one per participant)
            and scroll sideways with ‹ › buttons when there are too many -->
       <div class="results-toolbar">
@@ -64,7 +52,7 @@
           </div>
           <div class="viewer-switch" id="viewer-switch">
             <button type="button" class="viewer-switch-item is-active" aria-pressed="true">Heatmap</button>
-            <button type="button" class="viewer-switch-item" aria-pressed="false">Gazeplot</button>
+            <button type="button" class="viewer-switch-item" aria-pressed="false">Scanpath</button>
           </div>
         </section>
 
@@ -82,6 +70,7 @@
               class="field-box"
               placeholder="Write comments here..."
             ></textarea>
+            <button type="button" id="stamp-btn" class="btn-outline stamp-btn" disabled>Insert video time</button>
           </div>
           <div class="task-nav">
             <button type="button" id="prev-task" class="btn-outline" hidden>&larr; Task 1</button>

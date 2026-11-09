@@ -190,3 +190,99 @@
 .retry-step[hidden] {
   display: none;
 }
+
+/* Review after a task: the videos on the left, the comments on the right (the same comments as on the Results page) */
+
+.session-card.is-wide {
+  max-width: 1120px;
+}
+
+.review-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(240px, 1fr);
+  gap: var(--space-6);
+  align-items: start;
+}
+
+.review-viewer,
+.review-side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.review-label {
+  color: var(--color-green);
+  font-family: var(--font-heading);
+  font-size: 24px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.review-side .field-box {
+  min-height: 240px;
+}
+
+.review-side .btn-outline {
+  align-self: flex-start;
+}
+
+.review-screen {
+  aspect-ratio: 16 / 9;
+  background: var(--color-text);
+  color: var(--color-bg-white);
+}
+
+.review-screen video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.review-screen-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: var(--space-4);
+  text-align: center;
+}
+
+.review-switch {
+  display: flex;
+  gap: var(--space-6);
+}
+
+.review-switch-item {
+  padding: var(--space-1) 0;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--color-text-secondary);
+  font-family: var(--font-heading);
+  font-size: 16px;
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.review-switch-item:hover {
+  color: var(--color-text);
+}
+
+.review-switch-item.is-active {
+  border-bottom-color: var(--color-green);
+  color: var(--color-text);
+}
+
+.review-switch-item:focus-visible {
+  outline: 2px solid var(--color-green);
+  outline-offset: 2px;
+}
+
+@media (max-width: 900px) {
+  .review-layout {
+    grid-template-columns: 1fr;
+  }
+}

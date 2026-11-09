@@ -25,14 +25,10 @@ const viewerSwitchItems = document.querySelectorAll("#viewer-switch .viewer-swit
 const taskTitle = document.getElementById("task-title");
 const taskText = document.getElementById("task-text");
 const commentsBox = document.getElementById("task-comments");
+const stampButton = document.getElementById("stamp-btn");
 const prevTaskButton = document.getElementById("prev-task");
 const nextTaskButton = document.getElementById("next-task");
 const doneButton = document.getElementById("done-btn");
-const processPanel = document.getElementById("process-panel");
-const processSummary = document.getElementById("process-summary");
-const processButton = document.getElementById("process-btn");
-const processList = document.getElementById("process-list");
-const processNote = document.getElementById("process-note");
 
 let participantIndex = 0;
 let taskIndex = 0;
@@ -91,7 +87,10 @@ function renderSlide(slide, label, videoUrl, noteText = "Video placeholder, no r
     video.src = videoUrl;
     video.setAttribute("aria-label", `${label} video`);
     // the videos are played from the helper (file_server.py): without it they cannot load
-    video.addEventListener("error", () => renderSlide(slide, label, null, "The video could not be loaded. Is the helper running?"));
+    video.addEventListener("error", () => {
+      renderSlide(slide, label, null, "The video could not be loaded. Is the helper running?");
+      updateStampButton();
+    });
     slide.appendChild(video);
     return;
   }
@@ -120,6 +119,22 @@ function updateViewerSwitch() {
   viewer.querySelectorAll(".result-slide").forEach((slide, index) => {
     if (index !== active) slide.querySelector("video")?.pause();
   });
+  updateStampButton();
+}
+
+// "Insert video time" works when the slide you look at has a video
+function currentVideo() {
+  return viewer.querySelectorAll(".result-slide")[currentSlideIndex()]?.querySelector("video") ?? null;
+}
+
+function updateStampButton() {
+  stampButton.disabled = !currentVideo();
+}
+
+// 75 -> "1:15"
+function formatVideoTime(seconds) {
+  const whole = Math.floor(seconds);
+  return `${Math.floor(whole / 60)}:${String(whole % 60).padStart(2, "0")}`;
 }
 
 // ---------- Mark as complete (toggle) ----------
@@ -140,131 +155,35 @@ function setCompleted(done) {
   renderDoneButton();
 }
 
-// ---------- Process videos ----------
+// ---------- Videos that are not ready ----------
 
-// what each participant row shows while the helper works: { [participantId]: { state, done, total, percent, message } }
-// states: "waiting" (in the queue), "processing", "failed". No entry = the saved status of the participant is shown
-let processRows = {};
+// The videos are made by the helper right after each task (Session page). This is only the safety net: a recording whose
+// videos are missing (an old recording, or a task whose videos failed) is made now, by itself, when this page opens and the
+// helper is running. Videos that already exist on disk are not made again, so it is quick. There is no button for it.
 let processing = false;
 let helperReady = false; // the helper said hello ("ready") on the open connection
-let wasConnected = false; // tells "helper not detected" from "connection lost"
 let pendingStart = null; // the participants to send as soon as the helper says hello
-
-function participantName(participant, index) {
-  return `Participant ${index + 1}: ${participant.firstName} ${participant.lastName}`;
-}
-
-function showProcessNote(text) {
-  processNote.textContent = text ?? "";
-  processNote.hidden = !text;
-}
-
-// one row of the list: name, status, and a small bar while it is being processed
-function renderProcessRow(participant, index) {
-  const row = processRows[participant.id];
-  const item = document.createElement("li");
-  item.className = "process-row";
-
-  const name = document.createElement("span");
-  name.className = "process-name";
-  name.textContent = participantName(participant, index);
-
-  const status = document.createElement("span");
-  status.className = "process-status";
-  const bar = document.createElement("div");
-  bar.className = "process-bar";
-  const fill = document.createElement("div");
-  fill.className = "process-bar-fill";
-  bar.appendChild(fill);
-
-  let state = participant.recording.status === "ready" ? "ready" : "recorded";
-  if (row) state = row.state;
-
-  if (state === "ready") {
-    status.textContent = "Ready";
-  } else if (state === "waiting") {
-    status.textContent = "Waiting";
-  } else if (state === "processing") {
-    status.textContent = `Making the videos, task ${Math.min(row.done + 1, row.total)} of ${row.total} (${row.percent}%)`;
-    fill.style.width = `${row.total ? ((row.done + row.percent / 100) / row.total) * 100 : 0}%`;
-  } else if (state === "failed") {
-    status.textContent = `Failed: ${row.message}`;
-  } else {
-    status.textContent = "Recorded, not processed yet";
-  }
-  item.dataset.state = state;
-  item.append(name, status, bar);
-  return item;
-}
-
-function renderProcessPanel() {
-  const recorded = study.participants.filter((participant) => participant.recording);
-  const toProcess = getParticipantsToProcess(study);
-  const failed = Object.values(processRows).some((row) => row.state === "failed");
-
-  // nothing to show: no recordings, or everything is ready
-  if (recorded.length === 0 || (!processing && toProcess.length === 0 && !failed)) {
-    processPanel.hidden = true;
-    return;
-  }
-  processPanel.hidden = false;
-
-  if (processing) {
-    processSummary.textContent = "Making the videos. Keep this page open, and do not record a participant on this computer meanwhile.";
-  } else if (failed) {
-    processSummary.textContent = "Some videos could not be made. Finished participants are kept.";
-  } else {
-    processSummary.textContent =
-      toProcess.length === 1 ? "1 recording is not processed yet." : `${toProcess.length} recordings are not processed yet.`;
-  }
-  processButton.textContent = failed && !processing ? `Try again (${toProcess.length})` : `Process videos (${toProcess.length})`;
-  processButton.disabled = processing || toProcess.length === 0;
-
-  processList.replaceChildren(
-    ...study.participants
-      .map((participant, index) => (participant.recording ? renderProcessRow(participant, index) : null))
-      .filter(Boolean),
-  );
-}
 
 function startProcessing() {
   const list = getParticipantsToProcess(study);
   if (list.length === 0) return;
 
-  const participants = list.map((participant) => ({
-    participantId: participant.id,
-    sessionId: participant.recording.sessionId,
-    tasks: participant.recording.taskCount,
-  }));
+  pendingStart = {
+    studyId: study.id,
+    participants: list.map((participant) => ({
+      participantId: participant.id,
+      sessionId: participant.recording.sessionId,
+      tasks: participant.recording.taskCount,
+    })),
+  };
   processing = true;
-  processRows = {};
-  list.forEach((participant) => {
-    processRows[participant.id] = { state: "waiting", done: 0, total: participant.recording.taskCount, percent: 0 };
-  });
-  showProcessNote("");
-  renderProcessPanel();
-
-  const message = { studyId: study.id, participants };
   if (helperReady) {
-    bridge.send("process_participants", message);
+    bridge.send("process_participants", pendingStart);
+    pendingStart = null;
   } else {
-    pendingStart = message; // sent when the helper says hello
-    bridge.connect();
+    bridge.connect(); // no helper running: nothing happens and the page stays as it is (see "close" below)
   }
 }
-
-function stopProcessing(note) {
-  processing = false;
-  Object.keys(processRows).forEach((id) => {
-    if (processRows[id].state !== "failed") delete processRows[id]; // back to their saved status
-  });
-  showProcessNote(note);
-  renderProcessPanel();
-}
-
-bridge.on("open", () => {
-  wasConnected = true;
-});
 
 bridge.on("ready", () => {
   helperReady = true;
@@ -274,57 +193,32 @@ bridge.on("ready", () => {
   }
 });
 
-bridge.on("participant_started", (message) => {
-  const row = processRows[message.participantId];
-  if (row) Object.assign(row, { state: "processing", done: 0, percent: 0 });
-  renderProcessPanel();
-});
-
-bridge.on("participant_progress", (message) => {
-  const row = processRows[message.participantId];
-  if (row) Object.assign(row, { state: "processing", done: message.done, total: message.total, percent: message.percent });
-  renderProcessPanel();
-});
-
 // each participant is saved as soon as it is done: when the page is closed in the middle, the finished ones stay finished
 bridge.on("participant_done", (message) => {
   saveParticipantResults(study.id, message.participantId, message.videos);
   study = getStudy(study.id);
-  delete processRows[message.participantId];
-  renderProcessPanel();
   if (study.participants[participantIndex]?.id === message.participantId) render(); // the one on screen gets its videos
 });
 
-bridge.on("participant_failed", (message) => {
-  processRows[message.participantId] = { state: "failed", message: message.message, done: 0, total: 0, percent: 0 };
-  renderProcessPanel();
-});
-
 bridge.on("processing_done", () => {
-  stopProcessing("");
+  processing = false;
   study = getStudy(study.id);
   render();
 });
 
-bridge.on("error", (message) => {
+// an error or a lost helper: the page keeps what it has (the next time it opens it tries again)
+bridge.on("error", () => {
+  processing = false;
   pendingStart = null;
-  if (processing) stopProcessing(message.message);
+  render();
 });
 
 bridge.on("close", () => {
   helperReady = false;
   pendingStart = null;
-  const lost = wasConnected;
-  wasConnected = false;
-  if (!processing) return;
-  stopProcessing(
-    lost
-      ? "The connection to the helper was lost. Finished participants are kept. Start the helper again and press Process videos."
-      : "The helper is not running. Start it on this computer (python bridge_server.py --mode tobii), then press Process videos.",
-  );
+  processing = false;
+  render();
 });
-
-processButton.addEventListener("click", startProcessing);
 
 // ---------- Page ----------
 
@@ -339,7 +233,11 @@ function render() {
 
   // recorded but the videos are not made yet: say so, instead of "no recording"
   const notProcessed = participant.recording && participant.recording.status !== "ready";
-  const note = notProcessed ? "Recorded. Press Process videos to make this video." : undefined;
+  const note = notProcessed
+    ? processing
+      ? "Making the videos... this takes a moment."
+      : "Recorded, but the video is not ready. Start the helper (python bridge_server.py --mode tobii) and open this page again."
+    : undefined;
   renderSlide(document.getElementById("slide-heatmap"), "Heatmap", result?.heatmap, note);
   renderSlide(document.getElementById("slide-scanpath"), "Scanpath", result?.scanpath, note);
   viewer.scrollTo({ left: 0 }); // each participant / task starts on the heatmap
@@ -387,6 +285,23 @@ function startResults() {
     saveComments();
   });
 
+  // "[0:42] " at the cursor, on its own line: the comment says which moment of the video it is about
+  stampButton.addEventListener("click", () => {
+    const video = currentVideo();
+    if (!video) return;
+    const stamp = `[${formatVideoTime(video.currentTime)}] `;
+    const start = commentsBox.selectionStart ?? commentsBox.value.length;
+    const end = commentsBox.selectionEnd ?? start;
+    const before = commentsBox.value.slice(0, start);
+    const lead = before && !before.endsWith("\n") ? "\n" : "";
+    commentsBox.value = before + lead + stamp + commentsBox.value.slice(end);
+    const cursor = (before + lead + stamp).length;
+    commentsBox.setSelectionRange(cursor, cursor);
+    commentsBox.focus();
+    setComment(study.participants[participantIndex], taskIndex, commentsBox.value);
+    saveComments();
+  });
+
   prevTaskButton.addEventListener("click", () => {
     taskIndex = Math.max(0, taskIndex - 1);
     render();
@@ -402,7 +317,7 @@ function startResults() {
 
   renderDoneButton();
   render();
-  renderProcessPanel();
+  startProcessing(); // the safety net for missing videos
 }
 
 // ---------- Start (last, so everything above is defined) ----------

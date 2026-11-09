@@ -125,10 +125,27 @@
 }
 
 .thumbnail-section .thumbnail-image {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover; /* lấp đầy khung, giữ tỉ lệ ảnh, cắt phần thừa thay vì kéo méo */
+  object-position: top; /* like Netlify: the top of the page, not the middle */
   background: var(--color-card-image);
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* The picture is not taken yet (the helper is not running, or it is still working): the name of the site on the grey box */
+.thumbnail-section .thumbnail-pending {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  background-image: none;
+  color: var(--color-text-muted);
+  font-size: 20px;
+  font-weight: 600;
+  text-align: center;
+  overflow-wrap: anywhere;
 }
 
 .card-actions {

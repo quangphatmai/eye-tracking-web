@@ -4,11 +4,14 @@
 // 3. Calibration: "Start calibration" asks the helper, its progress ("point 5 of 9") fills the bar
 // 4. Familiarization: the participant explores the first website for 60 seconds (no tracking, no recording), then
 //    reads the intro on their own screen and presses Next
-// 5. Tasks: the participant reads the task, presses Start Task, and presses X when finished (or the time runs out).
-//    This page only follows along and starts the next task by itself. The timer counts down to the task's maximum time,
-//    the observer's button ends the task earlier. The helper decides when a task really ends and tells us ("task_finished")
-// 6. After the last task: the helper saves the recordings and closes the session. The videos (heatmap, scanpath) are made
-//    later from the Results page ("Process videos"), when nobody is being recorded: it is heavy work
+// 5. Tasks: the participant reads the task, presses Start Task, and closes the browser window when finished (or the time
+//    runs out). The timer counts down to the task's maximum time. The helper decides when a task really ends and tells us
+//    ("task_finished")
+// 5b. Review: right after a task the helper makes its heatmap and scanpath videos (some seconds, "task_processing", then
+//    "task_processed"). The observer watches them with the participant (retrospective think-aloud) and writes comments,
+//    the same comments as on the Results page. "Next task" goes on when the observer is ready
+// 6. After the last review: the helper saves the recordings and closes the session. Videos that are not ready yet can be
+//    made later from the Results page ("Process videos")
 // 7. While the participant explores the website and does tasks, the helper shows their head on the observer's second screen
 //    (a small Titta window, same picture as in the calibration)
 // If the helper is not running the page says so, and Retry tries again.
@@ -31,6 +34,7 @@ const stages = {
   calibration: document.getElementById("stage-calibration"),
   familiarize: document.getElementById("stage-familiarize"),
   task: document.getElementById("stage-task"),
+  review: document.getElementById("stage-review"),
   finish: document.getElementById("stage-finish"),
 };
 
@@ -50,6 +54,20 @@ const taskUrl = document.getElementById("task-url");
 const taskTimer = document.getElementById("task-timer");
 const taskHint = document.getElementById("task-hint");
 
+const sessionCard = document.getElementById("session-card");
+const reviewHeading = document.getElementById("review-heading");
+const reviewTaskText = document.getElementById("review-task-text");
+const reviewReason = document.getElementById("review-reason");
+const reviewSwitch = document.getElementById("review-switch");
+const reviewScreen = document.getElementById("review-screen");
+const reviewProgressBlock = document.getElementById("review-progress-block");
+const reviewProgressText = document.getElementById("review-progress-text");
+const reviewBar = document.getElementById("review-bar");
+const reviewFill = document.getElementById("review-fill");
+const reviewComments = document.getElementById("review-comments");
+const reviewStampButton = document.getElementById("review-stamp");
+const reviewNextButton = document.getElementById("review-next");
+
 const finishHeading = document.getElementById("finish-heading");
 const finishText = document.getElementById("finish-text");
 const goHomeLink = document.getElementById("go-home");
@@ -61,6 +79,9 @@ let taskIndex = 0; // 0 = Task 1
 let timerId = null;
 let currentStep = null; // "familiarize", "task" or "end": what "Try again" repeats after an error
 let finished = false; // the recordings are saved: the session is over
+let reviewIndex = 0; // the task being reviewed
+let reviewKind = "heatmap"; // "heatmap" or "scanpath": the tab of the review
+const taskVideos = {}; // task index -> { status: "making" | "ready" | "none" | "failed", percent, heatmap, scanpath, message }
 
 // ---------- Small helpers ----------
 
@@ -99,6 +120,7 @@ function showStage(name) {
   Object.entries(stages).forEach(([stageName, element]) => {
     element.hidden = stageName !== name;
   });
+  sessionCard.classList.toggle("is-wide", name === "review"); // room for the video next to the comments
 }
 
 function setProgress(bar, fill, done, total) {
@@ -231,14 +253,160 @@ const FINISH_REASONS = {
 
 bridge.on("task_finished", (message) => {
   clearInterval(timerId);
-  const note = `Task ${taskIndex + 1} finished${FINISH_REASONS[message.reason] ?? ""}. Showing the next task on the participant's screen...`;
+  taskVideos[taskIndex] = { status: "making", percent: 0 };
+  startReview(`Task ${taskIndex + 1} finished${FINISH_REASONS[message.reason] ?? ""}.`);
+});
 
+// ---------- Review (watch the videos with the participant, write comments) ----------
+
+// the helper makes the videos in the background, right after the task
+bridge.on("task_processing", (message) => {
+  const videos = taskVideos[message.index];
+  if (!videos || videos.status !== "making") return;
+  videos.percent = message.percent;
+  if (message.index === reviewIndex && currentStep === "review") renderReview();
+});
+
+bridge.on("task_processed", (message) => {
+  taskVideos[message.index] = message.heatmap
+    ? { status: "ready", percent: 100, heatmap: message.heatmap, scanpath: message.scanpath }
+    : { status: "none", percent: 100 }; // nothing to show (mock mode, or the task was skipped)
+  // keep them: the Results page shows these videos later, also after this page was closed
+  if (message.heatmap) saveTaskVideos(study.id, participant.id, message.index, message.heatmap, message.scanpath);
+  markReadyWhenComplete();
+  if (message.index === reviewIndex && currentStep === "review") renderReview();
+});
+
+bridge.on("task_process_failed", (message) => {
+  taskVideos[message.index] = { status: "failed", percent: 0, message: message.message };
+  if (message.index === reviewIndex && currentStep === "review") renderReview();
+});
+
+// `reason` = how the task ended ("Task 1 finished (the time ran out).")
+// the session is over and every task has its videos: the recording needs no "Process videos"
+let recordedTasks = 0; // how many tasks the helper recorded (known when the session ends)
+function markReadyWhenComplete() {
+  if (!finished || recordedTasks === 0) return;
+  for (let index = 0; index < recordedTasks; index += 1) {
+    if (taskVideos[index]?.status !== "ready") return;
+  }
+  markRecordingReady(study.id, participant.id);
+}
+
+function startReview(reason) {
+  currentStep = "review";
+  reviewIndex = taskIndex;
+  reviewKind = "heatmap";
+  hideMessage();
+  showStage("review");
+  const last = taskIndex === study.tasks.length - 1;
+  reviewHeading.textContent = `Task ${taskIndex + 1} of ${study.tasks.length}: review`;
+  reviewReason.textContent = `${reason} Watch the videos with the participant and ask about what they did.`;
+  reviewTaskText.textContent = study.tasks[taskIndex].text || "(No task text)";
+  reviewComments.value = getTaskComment(study, participant, taskIndex);
+  reviewNextButton.textContent = last ? "Finish session" : `Task ${taskIndex + 2} \u2192`;
+  renderReview();
+}
+
+// the video (or the reason there is none) and the progress, for the task being reviewed
+function renderReview() {
+  const videos = taskVideos[reviewIndex] ?? { status: "none" };
+  const ready = videos.status === "ready";
+
+  reviewSwitch.querySelectorAll(".review-switch-item").forEach((item) => {
+    const active = item.dataset.kind === reviewKind;
+    item.classList.toggle("is-active", active);
+    item.setAttribute("aria-pressed", String(active));
+  });
+  reviewProgressBlock.hidden = videos.status !== "making";
+  if (videos.status === "making") {
+    reviewProgressText.textContent = `Making the videos... ${videos.percent}%. You can already talk with the participant and write comments.`;
+    setProgress(reviewBar, reviewFill, videos.percent, 100);
+  }
+
+  if (!ready) {
+    reviewStampButton.disabled = true;
+    const notes = {
+      making: "The videos are being made...",
+      none: "There is no video for this task.",
+      failed: `The videos could not be made${videos.message ? `: ${videos.message}` : ""}. Open the Results page with the helper running: it will make them again.`,
+    };
+    reviewScreen.replaceChildren();
+    const note = document.createElement("p");
+    note.className = "review-screen-note";
+    note.textContent = notes[videos.status] ?? notes.none;
+    reviewScreen.appendChild(note);
+    return;
+  }
+
+  // the two videos have the same timeline: switching tab keeps the time and the play/pause state
+  const old = reviewScreen.querySelector("video");
+  const time = old ? old.currentTime : 0;
+  const wasPlaying = old ? !old.paused : false;
+  const url = videos[reviewKind];
+  if (old && old.dataset.src === url) return; // nothing changed (a progress message came late)
+
+  const video = document.createElement("video");
+  video.controls = true;
+  video.dataset.src = url;
+  video.src = url;
+  video.setAttribute("aria-label", `${reviewKind} video`);
+  video.addEventListener("loadedmetadata", () => {
+    if (time > 0) video.currentTime = time;
+    if (wasPlaying) video.play().catch(() => {});
+  });
+  // the videos are played from the helper (file_server.py): without it they cannot load
+  video.addEventListener("error", () => {
+    reviewStampButton.disabled = true;
+    reviewScreen.replaceChildren();
+    const note = document.createElement("p");
+    note.className = "review-screen-note";
+    note.textContent = "The video could not be loaded. Is the helper running?";
+    reviewScreen.appendChild(note);
+  });
+  reviewScreen.replaceChildren(video);
+  reviewStampButton.disabled = false;
+}
+
+reviewSwitch.addEventListener("click", (event) => {
+  const item = event.target.closest(".review-switch-item");
+  if (!item || item.dataset.kind === reviewKind) return;
+  reviewKind = item.dataset.kind;
+  renderReview();
+});
+
+// "[0:42] " at the cursor: the time of the video, so the comment says which moment it is about
+reviewStampButton.addEventListener("click", () => {
+  const video = reviewScreen.querySelector("video");
+  if (!video) return;
+  const stamp = `[${formatTime(Math.floor(video.currentTime))}] `;
+  const start = reviewComments.selectionStart ?? reviewComments.value.length;
+  const end = reviewComments.selectionEnd ?? start;
+  const text = reviewComments.value;
+  const before = text.slice(0, start);
+  const lead = before && !before.endsWith("\n") ? "\n" : ""; // each note on its own line
+  reviewComments.value = before + lead + stamp + text.slice(end);
+  const cursor = (before + lead + stamp).length;
+  reviewComments.setSelectionRange(cursor, cursor);
+  reviewComments.focus();
+  setTaskComment(study.id, participant.id, reviewIndex, reviewComments.value);
+});
+
+// saved while you type (the same comment is on the Results page)
+reviewComments.addEventListener("input", () => {
+  setTaskComment(study.id, participant.id, reviewIndex, reviewComments.value);
+});
+
+reviewNextButton.addEventListener("click", () => {
+  const video = reviewScreen.querySelector("video");
+  if (video) video.pause();
+  reviewScreen.replaceChildren();
   if (taskIndex === study.tasks.length - 1) {
     endSession();
     return;
   }
   taskIndex += 1;
-  startTask(note);
+  startTask(`Task ${taskIndex} reviewed. Showing the next task on the participant's screen...`);
 });
 
 // ---------- End of the session ----------
@@ -260,9 +428,11 @@ bridge.on("session_ended", (message) => {
   finished = true;
   currentStep = null;
   saveParticipantRecording(study.id, participant.id, message.sessionId, message.tasks);
+  recordedTasks = message.tasks;
+  markReadyWhenComplete(); // the videos of the last task may still be in the making: then they mark it when they are done
   finishHeading.textContent = "Session complete";
   finishText.textContent =
-    "The recordings are saved. When all participants are done, open Results and press Process videos: it takes a while and needs the computer to be free.";
+    "The recordings are saved. The videos of the tasks are made right after each task; if one is missing, open Results with the helper running and it is made there.";
   viewResultsLink.href = `results.html?study=${study.id}`;
   goHomeLink.hidden = false;
   viewResultsLink.hidden = false;
@@ -313,7 +483,7 @@ bridge.on("error", (message) => {
   showMessage(message.message);
   if (!sessionReady) return;
   startCalibrationButton.disabled = false;
-  if (!stages.calibration.hidden) return;
+  if (!stages.calibration.hidden || currentStep === "review") return;
   retryStepButton.hidden = false;
 });
 
@@ -333,6 +503,7 @@ retryButton.addEventListener("click", () => {
   // a new connection is a new session on the helper, so everything starts again from the calibration
   taskIndex = 0;
   finished = false;
+  Object.keys(taskVideos).forEach((key) => delete taskVideos[key]);
   viewResultsLink.hidden = true;
   goHomeLink.hidden = true;
   showStage("calibration");
