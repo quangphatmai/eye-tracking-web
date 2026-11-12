@@ -186,7 +186,10 @@ document.addEventListener("click", (event) => {
 // is added or removed
 function updateTaskNumbers() {
   taskList.querySelectorAll(".task-block").forEach((block, index) => {
-    block.querySelector(".task-title").textContent = `Task ${index + 1}:`;
+    const number = index + 1;
+    block.querySelector(".task-title").textContent = `Task ${number}:`;
+    block.querySelector(".task-url-label").textContent = `Attach the URL link for Task ${number}:`;
+    block.querySelector(".task-prompt-label").textContent = `Write the prompt for Task ${number}:`;
     block.querySelector(".task-remove").setAttribute("aria-label", `Remove Task ${index + 1}`);
   });
 }
@@ -215,7 +218,7 @@ document.getElementById("remove-task-confirm").addEventListener("click", () => {
   const neighbour = block.previousElementSibling ?? block.nextElementSibling;
   block.remove();
   updateTaskNumbers();
-  (neighbour?.querySelector("textarea") ?? document.getElementById("add-task")).focus();
+  (neighbour?.querySelector("input") ?? document.getElementById("add-task")).focus();
 });
 
 document.getElementById("remove-task-cancel").addEventListener("click", () => removeTaskDialog.close());
@@ -230,7 +233,8 @@ removeTaskDialog.addEventListener("close", () => {
 // ids need to stay unique (labels point to them), so they come from a counter and not from the visible number
 let taskIdCounter = 0;
 
-// A task block: label + textarea, label + url, duration (shown once there is a url). `task` fills the boxes (edit mode)
+// A task block: "Task N:" + Remove, label + url, label + textarea (the prompt), duration (shown once there is a url).
+// The labels say which task they belong to ("...for Task 2:") and are renumbered by updateTaskNumbers(). `task` fills the boxes (edit mode)
 function addTaskBlock(task = { text: "", url: "", duration: DEFAULT_DURATION }) {
   const uid = ++taskIdCounter;
 
@@ -238,15 +242,16 @@ function addTaskBlock(task = { text: "", url: "", duration: DEFAULT_DURATION }) 
   block.className = "task-block";
   block.innerHTML = `
     <div class="task-head">
-      <label for="task-${uid}" class="task-title"></label>
+      <h3 class="task-title"></h3>
       <button type="button" class="task-remove">
         <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
         Remove
       </button>
     </div>
-    <textarea id="task-${uid}" name="task-${uid}" class="field-box" placeholder="Write task here..."></textarea>
-    <label for="task-${uid}-url">Attach URL link below:</label>
+    <label for="task-${uid}-url" class="task-url-label"></label>
     <input type="url" id="task-${uid}-url" name="task-${uid}-url" class="field-box" placeholder="URL link goes here..." />
+    <label for="task-${uid}" class="task-prompt-label"></label>
+    <textarea id="task-${uid}" name="task-${uid}" class="field-box" placeholder="Write task here..."></textarea>
     <div class="task-duration" hidden>
       <label for="task-${uid}-duration-button" id="task-${uid}-duration-label">Task duration (maximum time):</label>
       <div class="duration-picker">
@@ -288,7 +293,7 @@ function addTaskBlock(task = { text: "", url: "", duration: DEFAULT_DURATION }) 
 }
 
 document.getElementById("add-task").addEventListener("click", () => {
-  addTaskBlock().querySelector("textarea").focus();
+  addTaskBlock().querySelector("input").focus(); // the URL box comes first
 });
 
 // Start: empty form, or the study being edited

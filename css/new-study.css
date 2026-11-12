@@ -1,7 +1,7 @@
 /* New Study form */
 /* .form-page: grey background, content column on the left */
 /* .field-box: grey input/textarea boxes (task, URL) */
-/* .task-block: "TASK 1:" label + Remove + textarea + "ATTACH URL LINK BELOW:" + URL box */
+/* .task-block: "TASK 1:" + Remove, URL label + URL box, prompt label + textarea, duration */
 /* Same page structure as consent.css / add-participant.css: grey page, 64px top, 72px bottom */
 
 /* Page */
@@ -181,7 +181,9 @@
   gap: var(--space-2);
 }
 
-.task-block label {
+.task-block label,
+.task-block .task-title {
+  margin: 0;
   color: var(--color-text);
   font-family: var(--font-heading);
   font-size: 16px;
@@ -191,7 +193,7 @@
 }
 
 .task-block .field-box + label {
-  margin-top: var(--space-4); /* space between the task box and the URL label */
+  margin-top: var(--space-4); /* space between the URL box and the prompt label */
 }
 
 /* Task duration: appears under the URL box once a URL is typed */
