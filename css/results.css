@@ -46,6 +46,19 @@
   text-transform: uppercase;
 }
 
+/* One line under the tabs: the name, gender and age of the participant on screen */
+.participant-info {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 16px;
+  line-height: 1.2;
+  text-align: right; /* the tabs sit at the right edge, the line lines up under them */
+}
+
+.participant-info[hidden] {
+  display: none;
+}
+
 .results-message {
   margin: 0;
   color: var(--color-text-muted);

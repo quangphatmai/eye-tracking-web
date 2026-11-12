@@ -20,6 +20,7 @@ const tabsScroller = document.getElementById("participant-scroller");
 const participantTabs = document.getElementById("participant-tabs");
 const resultsContent = document.getElementById("results-content");
 const resultsMessage = document.getElementById("results-message");
+const participantInfo = document.getElementById("participant-info");
 const viewer = document.getElementById("results-viewer");
 const viewerSwitchItems = document.querySelectorAll("#viewer-switch .viewer-switch-item");
 const taskTitle = document.getElementById("task-title");
@@ -37,6 +38,7 @@ let taskIndex = 0;
 
 function showMessage(text) {
   tabsScroller.hidden = true;
+  participantInfo.hidden = true;
   resultsContent.hidden = true;
   doneButton.hidden = true; // nothing to complete
   resultsMessage.hidden = false;
@@ -222,11 +224,31 @@ bridge.on("close", () => {
 
 // ---------- Page ----------
 
+// the values of the Gender drop-down (add-participant.html) as they are written on the page
+const GENDER_LABELS = {
+  male: "Male",
+  female: "Female",
+  other: "Other",
+  "prefer-not-to-say": "Prefer not to say",
+};
+
+// "Phat Mai · Male · Age 24": the parts that are missing (old data) are left out
+function renderParticipantInfo(participant) {
+  const parts = [
+    `${participant.firstName ?? ""} ${participant.lastName ?? ""}`.trim(),
+    GENDER_LABELS[participant.gender] ?? participant.gender,
+    participant.age ? `Age ${participant.age}` : "",
+  ].filter(Boolean);
+  participantInfo.textContent = parts.join(" · "); // text, not HTML
+  participantInfo.hidden = parts.length === 0;
+}
+
 function render() {
   const participant = study.participants[participantIndex];
   const task = study.tasks[taskIndex];
   const result = participant.results?.[taskIndex];
 
+  renderParticipantInfo(participant);
   taskTitle.textContent = `Task ${taskIndex + 1}:`;
   taskText.textContent = task ? task.text : "This study has no tasks yet.";
   commentsBox.value = getComment(participant, taskIndex);
